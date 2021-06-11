@@ -1,4 +1,5 @@
 <?php
+include 'env.php';
 session_start();
 error_reporting(0);
 $server = "localhost";
