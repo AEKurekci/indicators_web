@@ -1,0 +1,254 @@
+@font-face {
+    font-family: Poppins-Light;
+    src: url('../fonts/Poppins-Light.ttf');
+}
+@font-face {
+    font-family: Poppins-Regular;
+    src: url('../fonts/Poppins-Regular.ttf');
+}
+@font-face {
+    font-family: Poppins-Semi-Bold;
+    src: url('../fonts/Poppins-SemiBold.ttf');
+}
+@font-face {
+    font-family: Poppins-Bold;
+    src: url('../fonts/Poppins-Bold.ttf');
+}
+
+table{
+    border-spacing: 0 1px;
+}
+.fullWidth{
+    width: 100%;
+}
+.tableTitle{
+    background-color: #7db8ea;
+    color: #ffffffe0;
+}
+.userText{
+    padding: 10px;
+    font-family: 'Poppins-Light';
+}
+.cell{
+    padding: 18px;
+    font-family: Poppins-Light;
+}
+.green{
+    background-color: rgba(129, 232, 115, 0.73);
+}
+.red{
+    background-color: rgba(232, 97, 72, 0.8);
+}
+.notr{
+    background-color: #cccccc87;
+}
+
+.topMenu li{
+    list-style: none;
+    display: inline;
+    font-size: 20px;
+}
+.register{
+    list-style: none;
+    font-size: 20px;
+}
+.star{
+    color: red;
+}
+.formButton{
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border-width: 0;
+    font-family: 'Poppins-Light';
+    font-size: 15px;
+    margin-right: 2px;
+}
+.formButton:hover{
+    cursor: pointer;
+}
+.formInput{
+    padding: 10px;
+    font-size: 15px;
+}
+.formInput:focus-visible{
+    outline-color: rgb(60, 216, 81);
+    outline-style: auto;
+    outline-width: 1px;
+}
+
+.greenBtn{
+    background-color: rgb(60, 216, 81);
+}
+.blueBtn{
+    background-color: rgb(60, 154, 216);
+    padding: 11px;
+}
+.blueBtn:hover{
+    background-color: #2b78ab;
+}
+.outBtn{
+    background-color: rgb(241, 59, 26);
+}
+.outBtn:hover{
+    background-color: rgb(207, 50, 23);
+}
+.whiteBtn{
+    background-color: rgb(255, 255, 255);
+    color: black;
+    font-family: Poppins-Regular;
+    border: 1px solid black;
+}
+.whiteBtn:hover{
+    background-color: #ccc;
+}
+.logoutCollider{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.tableDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+.tableContainer{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: hidden;
+    width: 75%;
+}
+.paginatorContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 75%;
+    background-color: #d3e0ea;
+    font-family: Poppins-Light;
+    font-size: 13px;
+}
+.paginatorExplanation{
+    flex: 1;
+    padding: 18px;
+}
+.paginator{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.paginatorButton{
+    background-color: #7db8ea;
+    margin-right: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.paginatorButton:hover{
+    cursor: pointer;
+    background-color: rgb(24, 132, 204);
+}
+.selectedPaginator{
+    background-color: rgb(24, 132, 204);
+}
+.boldText{
+    font-family: Poppins-Semi-Bold;
+}
+.lightFont{
+    font-family: Poppins-Light;
+}
+.regularFont{
+    font-family: Poppins-Regular;
+}
+.whiteText{
+    color: white;
+}
+.blackText{
+    color: black;
+}
+.paginatorA{
+    text-decoration: none;
+    padding: 18px;
+}
+.dropDown{
+    padding: 10px;
+    width: 100%;
+}
+.dropDown:focus-visible{
+    outline-color: rgb(60, 216, 81);
+    outline-style: auto;
+    outline-width: 1px;
+}
+
+/*Rule Box*/
+.ruleBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.ruleContainer{
+    width: 75%;
+}
+.ruleGroupBoxContainer{
+    outline-color: #3c9ad8;
+    outline-style: auto;
+    outline-width: 1px;
+    border-radius: 3px;
+    padding: 20px;
+    margin-top: 5px;
+}
+.col-start{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.row-space-between{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.row-start{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.bigTopMargin{
+    margin-top: 30px;
+}
+.topMargin{
+    margin-top: 10px;
+}
+.blueBackground{
+    background-color: #7dbde68c;
+}
+.flex2{
+    flex: 2;
+    margin: 10px;
+}
+.flex1{
+    flex: 1;
+    margin: 10px;
+}
+.deleteButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+.bottomLine{
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+.applyButton{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+}
