@@ -2,9 +2,9 @@
 session_start();
 error_reporting(0);
 $server = "localhost";
-$username = "root";
-$password = "";
-$db = "indicator_web";
+$username = $user_;
+$password = $passwd_;
+$db = $db_;
 
 $name = "";
 $surname = "";
@@ -162,6 +162,9 @@ $connect = null;
 </head>
 
 <body>
+    <div class="row-end">
+        <a class="formButton outBtn" href='javascript:history.go(-1);'>Geri</a>
+    </div>
     <nav class='text'>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
             <ul class="register">
@@ -178,11 +181,11 @@ $connect = null;
     </nav>
 
     <script>
-        let pass = "Sinyalci575859*";
+        /*let pass = "Sinyalci575859*";
         let encryptedText = encryptText(pass, "AnApiKey")
         console.log(encryptedText);
         let decryptedText = decryptText(pass, encryptedText)
-        console.log(decryptedText);
+        console.log(decryptedText);*/
     </script>
 </body>
 

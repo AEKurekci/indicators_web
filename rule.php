@@ -2,9 +2,9 @@
 error_reporting(0);
 session_start();
 $server = "localhost";
-$username = "root";
-$password = "";
-$db = "indicator_web";
+$username = $user_;
+$password = $passwd_;
+$db = $db_;
 
 try {
     $connect = new PDO("mysql:host=$server;dbname=$db", $username, $password);

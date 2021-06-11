@@ -1,10 +1,11 @@
 <?php
+include 'env.php';
 error_reporting(0);
 session_start();
 $server = "localhost";
-$username = "root";
-$password = "";
-$db = "indicator_web";
+$username = $user_;
+$password = $passwd_;
+$db = $db_;
 $user_id = $_SESSION['user_id'];
 $success = null;
 
@@ -35,7 +36,7 @@ try {
             }
         }
     } else {
-        echo "$db diye bir DB yok";
+        echo "$db diye bir DB yok!!";
     }
 } catch (PDOException $ex) {
     print "Connection failed" . $ex->getMessage();
