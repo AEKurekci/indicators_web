@@ -165,14 +165,14 @@ $connect = null;
     <nav class='text'>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
             <ul class="register">
-                <li><input type="text" placeholder="Ad" name="name" value="<?php echo $name ?>" /><span class="star">*<?php echo $nameErr ?></span></li>
-                <li><input type="text" placeholder="Soyad" name="surname" value="<?php echo $surname ?>" /><span class="star">*<?php echo $surnameErr ?></span></li>
-                <li><input type="email" placeholder="Email" name="email" value="<?php echo $email ?>" /><span class="star">*<?php echo $emailErr ?></span></li>
-                <li><input type="text" placeholder="Kullanıcı Adı" name="userName" value="<?php echo $userName ?>" /><span class="star">* <?php echo $userNameErr ?></span></li>
-                <li><input type="password" placeholder="Şifre" name="password" /><span class="star">* <?php echo $passwordErr ?></span></li>
-                <li><input type="text" placeholder="Api Key" name="api_key" value="<?php echo $apiKey ?>" /></li>
-                <li><input type="text" placeholder="Secret Key" name="secret_key" value="<?php echo $secretKey ?>" /></li>
-                <li><button type="submit">Kaydol</button></li>
+                <li><input class="formInput" type="text" placeholder="Ad" name="name" value="<?php echo $name ?>" /><span class="star">*<?php echo $nameErr ?></span></li>
+                <li><input class="formInput topMargin" type="text" placeholder="Soyad" name="surname" value="<?php echo $surname ?>" /><span class="star">*<?php echo $surnameErr ?></span></li>
+                <li><input class="formInput topMargin" type="email" placeholder="Email" name="email" value="<?php echo $email ?>" /><span class="star">*<?php echo $emailErr ?></span></li>
+                <li><input class="formInput topMargin" type="text" placeholder="Kullanıcı Adı" name="userName" value="<?php echo $userName ?>" /><span class="star">* <?php echo $userNameErr ?></span></li>
+                <li><input class="formInput topMargin" type="password" placeholder="Şifre" name="password" /><span class="star">* <?php echo $passwordErr ?></span></li>
+                <li><input class="formInput topMargin" type="text" placeholder="Api Key" name="api_key" value="<?php echo $apiKey ?>" /></li>
+                <li><input class="formInput topMargin" type="text" placeholder="Secret Key" name="secret_key" value="<?php echo $secretKey ?>" /></li>
+                <li><button class="formButton greenBtn topMargin" type="submit">Kaydol</button></li>
             </ul>
         </form>
     </nav>
