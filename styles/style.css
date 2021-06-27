@@ -21,6 +21,9 @@ table{
 .fullWidth{
     width: 100%;
 }
+.halfWidth{
+    width: 50%;
+}
 .tableTitle{
     background-color: #7db8ea;
     color: #ffffffe0;
@@ -176,7 +179,6 @@ table{
 }
 .dropDown{
     padding: 10px;
-    width: 100%;
 }
 .dropDown:focus-visible{
     outline-color: rgb(60, 216, 81);
