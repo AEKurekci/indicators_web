@@ -68,7 +68,7 @@ try {
                     <td><a class='blueBtn formButton' href="register.php">Üye Ol</a></td>
                     <td style="color:red"><?php echo $message ?></td>
                     <td id="successMess" style="color:rgb(60, 216, 81)"><?php echo $success ?></td>
-                    <td><a class='blueBtn formButton' href="/phpmyadmin">DB</a></td>
+		    <td><a class='blueBtn formButton' href="/phpmyadmin">DB</a></td>
                 </tr>
             </table>
         </form>
