@@ -10,8 +10,73 @@ $db = $db_;
 try {
     $connect = new PDO("mysql:host=$server;dbname=$db", $username, $password);
     $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $sql_md5 = "Select id from ind_conditions";
+        $md5_result = $connect->query($sql_md5);
+        $md5_rows = $md5_result->fetchAll(PDO::FETCH_COLUMN);
+
+        $bigAndOr = $_POST['bigAndOr'];
+        $sellBuy = $_POST['sellBuy'];
+        $period1 = $_POST['period1'];
+        $ind1 = $_POST['ind1'];
+        $ind2 = $_POST['ind2'];
+        $val2 = $_POST['val2'];
+        $comperator = $_POST['comperator'];
+        $input_type = $_POST['input_type'];
+        $max_val = $_POST['max_val'];
+        $min_val = $_POST['min_val'];
+        $error = "";
+
+        foreach ($period1 as $i => $p1) {
+            foreach ($p1 as $j => $per) {
+                print $val2[$i][$j];
+                $ind1_type = "indicator";
+                $ind2_type = "indicator";
+                $value3 = "";
+                if (in_array($ind1[$i][$j], array("open", "high", "low", "close")) == true) {
+                    $ind1_type = "candle";
+                }
+                if ($input_type[$i][$j] == 'rad_ind' && in_array($ind2[$i][$j], array("open", "high", "low", "close")) == true && $comperator[$i][$j] != 'arasında') {
+                    $ind2_type = "candle";
+                } else if ($input_type[$i][$j] == 'rad_val') {
+                    $ind2_type = "value";
+                    $ind2[$i][$j] = $val2[$i][$j];
+                }
+                if ($comperator[$i][$j] == 'arasında') {
+                    if ($min_val[$i][$j] == '' || $max_val[$i][$j] == '') {
+                        $error = "Tüm değerlerin doğru girildiğininden emin olun!";
+                        break;
+                    }
+                    $ind2[$i][$j] = $min_val[$i][$j];
+                    $value3 = $max_val[$i][$j];
+                    $ind2_type = 'value';
+                }
+                echo "<br>";
+                $text_for_md5 = $ind1[$i][$j] . '.' . $ind1_type . '.' . $ind2[$i][$j] . '.' . $ind2_type . '.' . $value3 . '.' . $comperator[$i][$j] . '.' . $period1[$i][$j];
+                print $text_for_md5;
+                $cond_md = md5($text_for_md5);
+                echo "<br>";
+                print $cond_md;
+                if (in_array($cond_md, $md5_rows) == false) {
+                    add_db($cond_md, $ind1[$i][$j], $ind1_type, $ind2[$i][$j], $ind2_type, $value3, $comperator[$i][$j], $period1[$i][$j], $connect);
+                }
+            }
+        }
+    }
 } catch (PDOException $ex) {
     print "Connection failed" . $ex->getMessage();
+}
+
+function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $per, $conn)
+{
+    echo "<br>";
+    print "writing db";
+    $sqCond = "INSERT INTO ind_conditions (id, ind1, first_column_type, ind2, second_column_type, value3, operator, period) VALUES
+    ('$md_val', '$ind1','$ind1_type','$ind2','$ind2_type','$val3','$oper','$per')";
+    $conn->exec($sqCond);
+
+    echo "<script type='text/javascript'>alert('Kayıt başarılı');</script>";
 }
 ?>
 <!DOCTYPE html>
@@ -24,6 +89,13 @@ try {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="placeConditions.js"></script>
     <script src="ruleController.js"></script>
+    <script src="dropdown.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -36,9 +108,9 @@ try {
         <a class="formButton greenBtn" href="index.php">Geri</a>
         <a class="formButton outBtn" href="logout.php">Çıkış</a>
     </div>
-    <div class="ruleContainer topMargin">
-        <div>
-            <select class="dropDown fullWidth">
+    <form id="form" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="ruleContainer topMargin">
+        <div class="row-space-between">
+            <select class="dropDown halfWidth" name="bigAndOr">
                 <option value="and">
                     VE
                 </option>
@@ -46,610 +118,302 @@ try {
                     VEYE
                 </option>
             </select>
+
+            <select class="dropDown halfWidth" name="sellBuy">
+                <option value="sell">
+                    SAT
+                </option>
+                <option value="buy">
+                    AL
+                </option>
+            </select>
         </div>
 
-        <div id="ruleGroup" class="ruleGroupBoxContainer col-start">
-            <div class="regularFont blackText">- Kural Grubu</div>
+        <div id="str-container">
+            <div id="strategy-0" class="ruleGroupBoxContainer col-start strategy">
+                <div class="regularFont blackText">- Kural Grubu</div>
 
-            <div id="rule-0" class="rule">
-                <div class="bigTopMargin row-space-between">
-                    <select id="andOr" class="dropDown halfWidth">
-                        <option value="and">
-                            VE
-                        </option>
-                        <option value="or">
-                            VEYE
-                        </option>
-                    </select>
+                <div id="ruleGroup">
+                    <div class="bigTopMargin row-space-between">
+                        <select id="andOr" class="dropDown halfWidth" name="andOr[0][]">
+                            <option value="and">
+                                VE
+                            </option>
+                            <option value="or">
+                                VEYE
+                            </option>
+                        </select>
 
-                    <div class="row-end">
-                        <a id="addBtn" class="formButton blueBtn">
-                            <i class="fa fa-plus"></i>
-                        </a>
-                        <a id="copyBtn" class="formButton blueBtn">
-                            <i class="fa fa-copy"></i>
-                        </a>
-                        <a id="removeBtn" class="formButton outBtn">
-                            <i class="fa fa-trash"></i>
-                        </a>
+                        <div class="row-end">
+                            <a id="addBtn" class="formButton blueBtn">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                            <a id="copyBtn" class="formButton blueBtn">
+                                <i class="fa fa-copy"></i>
+                            </a>
+                            <a id="strRemoveBtn" class="formButton outBtn">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="rule-0" class="rule row-space-between ruleGroupBoxContainer topMargin blueBackground">
+                        <div class="flex2 col-start ">
+                            <select name="period1[0][]" id="period1" class="dropDown fullWidth">
+                                <option value="15m">
+                                    15 Dakika
+                                </option>
+                                <option value="1h">
+                                    1 Saat
+                                </option>
+                                <option value="4h">
+                                    4 Saat
+                                </option>
+                                <option value="1d">
+                                    1 Gün
+                                </option>
+                                <option value="3d">
+                                    3 Gün
+                                </option>
+                            </select>
+                            <select name="ind1[0][]" id="ind1" class="dropDown fullWidth">
+                                <optgroup label="Fiyat Mumu">
+                                    <option value="open">Open - Açılış</option>
+                                    <option value="high">High - Yüksek</option>
+                                    <option value="low">Low - Düşük</option>
+                                    <option value="close">Close - Kapanış</option>
+                                </optgroup>
+                                <optgroup label="Aroon">
+                                    <option value="aroon_14_up">Aroon (14) Üst</option>
+                                    <option value="aroon_14_down">Aroon (14) Alt</option>
+                                </optgroup>
+                                <optgroup label="Bollinger Bantları">
+                                    <option value="bbands_20_2_upper">BB (20, 2) Üst Bant</option>
+                                    <option value="bbands_20_2_lower">BB (20, 2) Alt Bant</option>
+                                    <option value="bbands_20_3_upper">BB (20, 3) Üst Bant</option>
+                                    <option value="bbands_20_3_lower">BB (20, 3) Alt Bant</option>
+                                </optgroup>
+                                <optgroup label="Değişim Hızı">
+                                    <option value="roc_9">ROC (9)</option>
+                                </optgroup>
+                                <optgroup label="Donchian Kanalları">
+                                    <option value="don_ch_hband">Donchian (20) Üst Bant</option>
+                                    <option value="don_ch_lband">Donchian (20) Alt Band</option>
+                                </optgroup>
+                                <optgroup label="Emtia Kanal Endeksi">
+                                    <option value="cci_20">CCI (20)</option>
+                                </optgroup>
+                                <optgroup label="Göreceli Güç Endeksi">
+                                    <option value="rsi14">RSI (14)</option>
+                                    <option value="rsi7">RSI (7)</option>
+                                </optgroup>
+                                <optgroup label="Hareketli Ortalamalar">
+                                    <option value="ma_7">MA (7)</option>
+                                    <option value="ma_10">MA (10)</option>
+                                    <option value="ma_14">MA (14)</option>
+                                    <option value="ma_20">MA (20)</option>
+                                    <option value="ma_30">MA (30)</option>
+                                    <option value="ma_34">MA (34)</option>
+                                    <option value="ma_50">MA (50)</option>
+                                    <option value="ma_55">MA (55)</option>
+                                    <option value="ma_89">MA (89)</option>
+                                    <option value="ma_100">MA (100)</option>
+                                    <option value="ma_144">MA (144)</option>
+                                    <option value="ma_200">MA (200)</option>
+                                    <option value="ma_233">MA (233)</option>
+                                    <option value="ema_7">EMA (7)</option>
+                                    <option value="ema_10">EMA (10)</option>
+                                    <option value="ema_14">EMA (14)</option>
+                                    <option value="ema_20">EMA (20)</option>
+                                    <option value="ema_30">EMA (30)</option>
+                                    <option value="ema_34">EMA (34)</option>
+                                    <option value="ema_50">EMA (50)</option>
+                                    <option value="ema_55">EMA (55)</option>
+                                    <option value="ema_89">EMA (89)</option>
+                                    <option value="ema_100">EMA (100)</option>
+                                    <option value="ema_144">EMA (144)</option>
+                                    <option value="ema_200">EMA (200)</option>
+                                    <option value="ema_233">EMA (233)</option>
+                                </optgroup>
+                                <optgroup label="Ichimoku Kinko Hyo">
+                                    <option value="ichimoku_base">Ichimoku Baz Çizgisi / Kijun-sen</option>
+                                    <option value="ichimoku_con">Ichimoku Dönüş Çizgisi / Tenkan-sen</option>
+                                    <option value="ichimoku_a">Ichimoku Span A</option>
+                                    <option value="ichimoku_b">Ichimoku Span B</option>
+                                </optgroup>
+                                <optgroup label="Keltner Kanalları">
+                                    <option value="kc_hband">KC (20) Üst Bant</option>
+                                    <option value="kc_lband">KC (20) Alt Bant</option>
+                                </optgroup>
+                                <optgroup label="MACD">
+                                    <option value="macd_seviyesi">MACD (12, 26) Seviyesi</option>
+                                    <option value="macd_sinyali">MACD (12, 26) Sinyali</option>
+                                </optgroup>
+                                <optgroup label="Momentum">
+                                    <option value="mom_10">Momentum (10)</option>
+                                </optgroup>
+                                <optgroup label="Müthiş Osilatör">
+                                    <option value="ao">AO</option>
+                                </optgroup>
+                                <optgroup label="Ortalama Gerçek Aralık">
+                                    <option value="atr_14">ATR (14)</option>
+                                </optgroup>
+                                <optgroup label="Ortalama Yönsel Endeks">
+                                    <option value="adx_14">ADX (14) (Ortalama Yönsel Endeks)</option>
+                                </optgroup>
+                                <optgroup label="Parabolik SAR">
+                                    <option value="sar">PSAR</option>
+                                </optgroup>
+                                <optgroup label="Stochastic">
+                                    <option value="stoch_slowd">Stochastic (14, 3, 3) %D</option>
+                                    <option value="stoch_slowk">Stochastic (14, 3, 3) %K</option>
+                                </optgroup>
+                                <optgroup label="Stochastic RSI">
+                                    <option value="stoch_rsi_fastk">StochRSI (3, 3, 14, 14) Fast</option>
+                                    <option value="stoch_rsi_fastd">StochRSI (3, 3, 14, 14) Slow</option>
+                                </optgroup>
+                                <optgroup label="Williams Percent Range">
+                                    <option value="wr_14">WR (14)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="flex1 col-start ">
+                            <select name="comperator[0][]" id="comperator" class="dropDown fullWidth">
+                                <option value="büyük">Büyük</option>
+                                <option value="küçük">Küçük</option>
+                                <option value="aşağı keser">Aşağı Keser</option>
+                                <option value="yukarı keser">Yukarı Keser</option>
+                                <option value="arasında">Arasında</option>
+                            </select>
+                            <a id="removeBtn" class="formButton outBtn deleteButton">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+
+                        <div class="flex2 col-start">
+                            <select name="ind2[0][]" id="ind2" class="dropDown fullWidth">
+                                <optgroup label="Fiyat Mumu">
+                                    <option value="open">Open - Açılış</option>
+                                    <option value="high">High - Yüksek</option>
+                                    <option value="low">Low - Düşük</option>
+                                    <option value="close">Close - Kapanış</option>
+                                </optgroup>
+                                <optgroup label="Aroon">
+                                    <option value="aroon_14_up">Aroon (14) Üst</option>
+                                    <option value="aroon_14_down">Aroon (14) Alt</option>
+                                </optgroup>
+                                <optgroup label="Bollinger Bantları">
+                                    <option value="bbands_20_2_upper">BB (20, 2) Üst Bant</option>
+                                    <option value="bbands_20_2_lower">BB (20, 2) Alt Bant</option>
+                                    <option value="bbands_20_3_upper">BB (20, 3) Üst Bant</option>
+                                    <option value="bbands_20_3_lower">BB (20, 3) Alt Bant</option>
+                                </optgroup>
+                                <optgroup label="Değişim Hızı">
+                                    <option value="roc_9">ROC (9)</option>
+                                </optgroup>
+                                <optgroup label="Donchian Kanalları">
+                                    <option value="don_ch_hband">Donchian (20) Üst Bant</option>
+                                    <option value="don_ch_lband">Donchian (20) Alt Band</option>
+                                </optgroup>
+                                <optgroup label="Emtia Kanal Endeksi">
+                                    <option value="cci_20">CCI (20)</option>
+                                </optgroup>
+                                <optgroup label="Göreceli Güç Endeksi">
+                                    <option value="rsi14">RSI (14)</option>
+                                    <option value="rsi7">RSI (7)</option>
+                                </optgroup>
+                                <optgroup label="Hareketli Ortalamalar">
+                                    <option value="ma_7">MA (7)</option>
+                                    <option value="ma_10">MA (10)</option>
+                                    <option value="ma_14">MA (14)</option>
+                                    <option value="ma_20">MA (20)</option>
+                                    <option value="ma_30">MA (30)</option>
+                                    <option value="ma_34">MA (34)</option>
+                                    <option value="ma_50">MA (50)</option>
+                                    <option value="ma_55">MA (55)</option>
+                                    <option value="ma_89">MA (89)</option>
+                                    <option value="ma_100">MA (100)</option>
+                                    <option value="ma_144">MA (144)</option>
+                                    <option value="ma_200">MA (200)</option>
+                                    <option value="ma_233">MA (233)</option>
+                                    <option value="ema_7">EMA (7)</option>
+                                    <option value="ema_10">EMA (10)</option>
+                                    <option value="ema_14">EMA (14)</option>
+                                    <option value="ema_20">EMA (20)</option>
+                                    <option value="ema_30">EMA (30)</option>
+                                    <option value="ema_34">EMA (34)</option>
+                                    <option value="ema_50">EMA (50)</option>
+                                    <option value="ema_55">EMA (55)</option>
+                                    <option value="ema_89">EMA (89)</option>
+                                    <option value="ema_100">EMA (100)</option>
+                                    <option value="ema_144">EMA (144)</option>
+                                    <option value="ema_200">EMA (200)</option>
+                                    <option value="ema_233">EMA (233)</option>
+                                </optgroup>
+                                <optgroup label="Ichimoku Kinko Hyo">
+                                    <option value="ichimoku_base">Ichimoku Baz Çizgisi / Kijun-sen</option>
+                                    <option value="ichimoku_con">Ichimoku Dönüş Çizgisi / Tenkan-sen</option>
+                                    <option value="ichimoku_a">Ichimoku Span A</option>
+                                    <option value="ichimoku_b">Ichimoku Span B</option>
+                                </optgroup>
+                                <optgroup label="Keltner Kanalları">
+                                    <option value="kc_hband">KC (20) Üst Bant</option>
+                                    <option value="kc_lband">KC (20) Alt Bant</option>
+                                </optgroup>
+                                <optgroup label="MACD">
+                                    <option value="macd_seviyesi">MACD (12, 26) Seviyesi</option>
+                                    <option value="macd_sinyali">MACD (12, 26) Sinyali</option>
+                                </optgroup>
+                                <optgroup label="Momentum">
+                                    <option value="mom_10">Momentum (10)</option>
+                                </optgroup>
+                                <optgroup label="Müthiş Osilatör">
+                                    <option value="ao">AO</option>
+                                </optgroup>
+                                <optgroup label="Ortalama Gerçek Aralık">
+                                    <option value="atr_14">ATR (14)</option>
+                                </optgroup>
+                                <optgroup label="Ortalama Yönsel Endeks">
+                                    <option value="adx_14">ADX (14) (Ortalama Yönsel Endeks)</option>
+                                </optgroup>
+                                <optgroup label="Parabolik SAR">
+                                    <option value="sar">PSAR</option>
+                                </optgroup>
+                                <optgroup label="Stochastic">
+                                    <option value="stoch_slowd">Stochastic (14, 3, 3) %D</option>
+                                    <option value="stoch_slowk">Stochastic (14, 3, 3) %K</option>
+                                </optgroup>
+                                <optgroup label="Stochastic RSI">
+                                    <option value="stoch_rsi_fastk">StochRSI (3, 3, 14, 14) Fast</option>
+                                    <option value="stoch_rsi_fastd">StochRSI (3, 3, 14, 14) Slow</option>
+                                </optgroup>
+                                <optgroup label="Williams Percent Range">
+                                    <option value="wr_14">WR (14)</option>
+                                </optgroup>
+                            </select>
+                            <div id="val_div" hidden>
+                                <input id="val2" name="val2[0][]" class="dropDown" placeholder="Value">
+                            </div>
+                            <div id="bet_div" class="row-space-evenly" hidden>
+                                <input id="min_val" name="min_val[0][]" class="dropDown" placeholder="Minimum">
+                                <input id="max_val" name="max_val[0][]" class="dropDown" placeholder="Maximum">
+                            </div>
+                            <div id="valueController" class="row-space-evenly padding">
+                                <div>
+                                    <input type="radio" name="input_type[0][]" id="rad_ind-0-0" value="rad_ind" checked>
+                                    <label for="rad_ind-0-0">Gösterge</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="input_type[0][]" id="rad_val-0-0" value="rad_val">
+                                    <label for="rad_val-0-0">Değer</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row-space-between ruleGroupBoxContainer topMargin blueBackground">
-                    <div class="flex2 col-start ">
-                        <select name="period1" id="period1" class="dropDown fullWidth">
-                            <option value="15m">
-                                15 Dakika
-                            </option>
-                            <option value="1h">
-                                1 Saat
-                            </option>
-                            <option value="4h">
-                                4 Saat
-                            </option>
-                            <option value="1d">
-                                1 Gün
-                            </option>
-                            <option value="3d">
-                                3 Gün
-                            </option>
-                        </select>
-                        <select id="ind1" class="dropDown fullWidth">
-                            <optgroup label="Fiyat">
-                                <option value="ask">Ask - Alış Fiyatı</option>
-                                <option value="bid">Bid - Satış Fiyatı</option>
-                            </optgroup>
-                            <optgroup label="Fiyat Mumu">
-                                <option value="open">Open - Açılış</option>
-                                <option value="high">High - Yüksek</option>
-                                <option value="low">Low - Düşük</option>
-                                <option value="close">Close - Kapanış</option>
-                                <option value="volume">Volume </option>
-                                <option value="Maturation">Mum Olgunluğu (Yüzde)</option>
-                            </optgroup>
-                            <!--
-                        <optgroup label="Anlık Değişim (Yüzde)">
-                            <option value="change_from_open">Mum Değişimi (Yüzde)</option>
-                            <option value="change_from_open_abs">Mum Değişimi (Fiyat)</option>
-                            <option value="ChangeInTime.5">5 Dakika</option>
-                            <option value="ChangeInTime.10">10 Dakika</option>
-                            <option value="ChangeInTime.15">15 Dakika</option>
-                            <option value="ChangeInTime.20">20 Dakika</option>
-                            <option value="ChangeInTime.25">25 Dakika</option>
-                            <option value="ChangeInTime.30">30 Dakika</option>
-                            <option value="ChangeInTime.45">45 Dakika</option>
-                            <option value="ChangeInTime.60">60 Dakika</option>
-                            <option value="ChangeInTime.90">90 Dakika</option>
-                            <option value="ChangeInTime.120">2 Saat</option>
-                            <option value="ChangeInTime.180">3 Saat</option>
-                            <option value="ChangeInTime.240">4 Saat</option>
-                            <option value="ChangeInTime.360">6 Saat</option>
-                            <option value="ChangeInTime.480">8 Saat</option>
-                            <option value="ChangeInTime.600">10 Saat</option>
-                            <option value="ChangeInTime.720">12 Saat</option>
-                            <option value="ChangeInTime.960">16 Saat</option>
-                            <option value="ChangeInTime.1200">20 Saat</option>
-                            <option value="ChangeInTime.1440">24 Saat</option>
-                            <option value="ChangeInTime.1920">32 Saat</option>
-                            <option value="ChangeInTime.2400">40 Saat</option>
-                            <option value="ChangeInTime.2880">48 Saat</option>
-                            <option value="ChangeInTime.3600">60 Saat</option>
-                            <option value="ChangeInTime.4320">72 Saat - 3 Gün</option>
-                            <option value="ChangeInTime.5760">96 Saat - 4 Gün</option>
-                            <option value="ChangeInTime.7200">120 Saat - 5 Gün</option>
-                            <option value="ChangeInTime.8640">144 Saat - 6 Gün</option>
-                            <option value="ChangeInTime.10080">168 Saat - 7 Gün</option>
-                            <option value="ChangeInTime.11520">192 Saat - 8 Gün</option>
-                            <option value="ChangeInTime.12960">216 Saat - 9 Gün</option>
-                            <option value="ChangeInTime.14400">240 Saat - 10 Gün</option>
-                        </optgroup>
-                        <optgroup label="Fiyat Limitleri">
-                            <option value="High.1M">En Yüksek (1 Aylık)</option>
-                            <option value="High.3M">En Yüksek (3 Aylık)</option>
-                            <option value="High.6M">En Yüksek (6 Aylık)</option>
-                            <option value="price_52_week_high">En Yüksek (1 Yıllık)</option>
-                            <option value="High.All">En Yüksek (Tüm Zamanlar)</option>
-                            <option value="Low.1M">En Düşük (1 Aylık)</option>
-                            <option value="Low.3M">En Düşük (3 Aylık)</option>
-                            <option value="Low.6M">En Düşük (6 Aylık)</option>
-                            <option value="price_52_week_low">En Düşük (1 Yıllık)</option>
-                            <option value="Low.All">En Düşük (Tüm Zamanlar)</option>
-                        </optgroup>
-                        <optgroup label="Piyasa Değeri (Market Cap)">
-                            <option value="BTC.Dominance">BTC Baskınlığı</option>
-                            <option value="ETH.Dominance">ETH Baskınlığı</option>
-                        </optgroup>
-                        -->
-                            <optgroup label="Aroon">
-                                <option value="Aroon.Up">Aroon (14) Üst</option>
-                                <option value="Aroon.Down">Aroon (14) Alt</option>
-                            </optgroup>
-                            <optgroup label="Boğa Ayı gücü">
-                                <option value="BBPower">BB Power</option>
-                            </optgroup>
-                            <optgroup label="Bollinger Bantları">
-                                <option value="BB.upper">BB (20, 2) Üst Bant</option>
-                                <option value="BB.lower">BB (20, 2) Alt Bant</option>
-                                <option value="BB3.upper">BB (20, 3) Üst Bant</option>
-                                <option value="BB3.lower">BB (20, 3) Alt Bant</option>
-                            </optgroup>
-                            <optgroup label="Değişim Hızı">
-                                <option value="ROC">ROC (9)</option>
-                            </optgroup>
-                            <optgroup label="Donchian Kanalları">
-                                <option value="DonchCh20.Upper">Donchian (20) Üst Bant</option>
-                                <option value="DonchCh20.Lower">Donchian (20) Alt Band</option>
-                            </optgroup>
-                            <optgroup label="EMA SMA Volume">
-                                <option value="EmaSmaVol.Oscilator">EmaSmaVol (9, 17) Osilatör</option>
-                                <option value="EmaSmaVol.Signal">EmaSmaVol (9, 17) Sinyal</option>
-                            </optgroup>
-                            <optgroup label="Emtia Kanal Endeksi">
-                                <option value="CCI20">CCI (20)</option>
-                            </optgroup>
-                            <optgroup label="Göreceli Güç Endeksi">
-                                <option value="RSI">RSI (14)</option>
-                                <option value="RSI7">RSI (7)</option>
-                            </optgroup>
-                            <optgroup label="Göreceli Güç Endeksi Hareketli Ortalamaları">
-                                <option value="RSI14.SMA5">MA (RSI, 5)</option>
-                                <option value="RSI14.SMA7">MA (RSI, 7)</option>
-                                <option value="RSI14.SMA10">MA (RSI, 10)</option>
-                                <option value="RSI14.SMA14">MA (RSI, 14)</option>
-                                <option value="RSI14.SMA21">MA (RSI, 21)</option>
-                                <option value="RSI14.EMA5">EMA (RSI, 5)</option>
-                                <option value="RSI14.EMA7">EMA (RSI, 7)</option>
-                                <option value="RSI14.EMA10">EMA (RSI, 10)</option>
-                                <option value="RSI14.EMA14">EMA (RSI, 14)</option>
-                                <option value="RSI14.EMA21">EMA (RSI, 21)</option>
-                            </optgroup>
-                            <optgroup label="Hareketli Ortalamalar">
-                                <option value="SMA7">MA (7)</option>
-                                <option value="SMA10">MA (10)</option>
-                                <option value="SMA14">MA (14)</option>
-                                <option value="SMA20">MA (20)</option>
-                                <option value="SMA30">MA (30)</option>
-                                <option value="SMA34">MA (34)</option>
-                                <option value="SMA50">MA (50)</option>
-                                <option value="SMA55">MA (55)</option>
-                                <option value="SMA89">MA (89)</option>
-                                <option value="SMA100">MA (100)</option>
-                                <option value="SMA144">MA (144)</option>
-                                <option value="SMA200">MA (200)</option>
-                                <option value="SMA233">MA (233)</option>
-                                <option value="EMA7">EMA (7)</option>
-                                <option value="EMA10">EMA (10)</option>
-                                <option value="EMA14">EMA (14)</option>
-                                <option value="EMA20">EMA (20)</option>
-                                <option value="EMA30">EMA (30)</option>
-                                <option value="EMA34">EMA (34)</option>
-                                <option value="EMA50">EMA (50)</option>
-                                <option value="EMA55">EMA (55)</option>
-                                <option value="EMA89">EMA (89)</option>
-                                <option value="EMA100">EMA (100)</option>
-                                <option value="EMA144">EMA (144)</option>
-                                <option value="EMA200">EMA (200)</option>
-                                <option value="EMA233">EMA (233)</option>
-                                <option value="HullMA9">HullMA (9)</option>
-                                <option value="VWMA">VWMA (20)</option>
-                            </optgroup>
-                            <optgroup label="Ichimoku Kinko Hyo">
-                                <option value="Ichimoku.BLine">Ichimoku Baz Çizgisi / Kijun-sen</option>
-                                <option value="Ichimoku.CLine">Ichimoku Dönüş Çizgisi / Tenkan-sen</option>
-                                <option value="Ichimoku.Lead1">Ichimoku Span A</option>
-                                <option value="Ichimoku.Lead2">Ichimoku Span B</option>
-                            </optgroup>
-                            <optgroup label="Keltner Kanalları">
-                                <option value="KltChnl.upper">KC (20) Üst Bant</option>
-                                <option value="KltChnl.lower">KC (20) Alt Bant</option>
-                            </optgroup>
-                            <optgroup label="MACD">
-                                <option value="MACD.macd">MACD (12, 26) Seviyesi</option>
-                                <option value="MACD.signal">MACD (12, 26) Sinyali</option>
-                            </optgroup>
-                            <optgroup label="Momentum">
-                                <option value="Mom">Momentum (10)</option>
-                            </optgroup>
-                            <optgroup label="Most">
-                                <option value="Most_5_1.Most">Most (5, 1) Most</option>
-                                <option value="Most_5_1.ExMov">Most (5, 1) ExMov</option>
-                            </optgroup>
-                            <optgroup label="Müthiş Osilatör">
-                                <option value="AO">AO</option>
-                            </optgroup>
-                            <optgroup label="Ortalama Gerçek Aralık">
-                                <option value="ATR">ATR (14)</option>
-                            </optgroup>
-                            <optgroup label="Ortalama Gün Aralığı">
-                                <option value="ADR">ADR (14)</option>
-                            </optgroup>
-                            <optgroup label="Ortalama Yönsel Endeks">
-                                <option value="ADX">ADX (14) (Ortalama Yönsel Endeks)</option>
-                                <option value="ADX-DI">ADX (14) -DI (Negatif Yönsel Gösterge)</option>
-                                <option value="ADX+DI">ADX (14) +DI (Pozitif Yönsel Gösterge)</option>
-                            </optgroup>
-                            <optgroup label="Parabolik SAR">
-                                <option value="P.SAR">PSAR</option>
-                            </optgroup>
-                            <optgroup label="Performans">
-                                <option value="Perf.W">Performans (Hafta)</option>
-                                <option value="Perf.1M">Performans (1 Ay)</option>
-                                <option value="Perf.3M">Performans (3 Ay)</option>
-                                <option value="Perf.6M">Performans (6 Ay)</option>
-                                <option value="Perf.Y">Performans (1 Yıl)</option>
-                                <option value="Perf.YTD">Performans (SBB)</option>
-                            </optgroup>
-                            <optgroup label="Pivot Noktaları">
-                                <option value="Pivot.Camarilla.Middle">Camarilla Orta</option>
-                                <option value="Pivot.Camarilla.R1">Camarilla R1</option>
-                                <option value="Pivot.Camarilla.R2">Camarilla R2</option>
-                                <option value="Pivot.Camarilla.R3">Camarilla R3</option>
-                                <option value="Pivot.Camarilla.S1">Camarilla S1</option>
-                                <option value="Pivot.Camarilla.S2">Camarilla S2</option>
-                                <option value="Pivot.Camarilla.S3">Camarilla S3</option>
-                                <option value="Pivot.Classic.Middle">Klasik Orta</option>
-                                <option value="Pivot.Classic.R1">Klasik R1</option>
-                                <option value="Pivot.Classic.R2">Klasik R2</option>
-                                <option value="Pivot.Classic.R3">Klasik R3</option>
-                                <option value="Pivot.Classic.S1">Klasik S1</option>
-                                <option value="Pivot.Classic.S2">Klasik S2</option>
-                                <option value="Pivot.Classic.S3">Klasik S3</option>
-                                <option value="Pivot.DeMark.Middle">DeMark Orta</option>
-                                <option value="Pivot.DeMark.R1">DeMark R1</option>
-                                <option value="Pivot.DeMark.S1">DeMark S1</option>
-                                <option value="Pivot.Fibonacci.Middle">Fibonacci Orta</option>
-                                <option value="Pivot.Fibonacci.R1">Fibonacci R1</option>
-                                <option value="Pivot.Fibonacci.R2">Fibonacci R2</option>
-                                <option value="Pivot.Fibonacci.R3">Fibonacci R3</option>
-                                <option value="Pivot.Fibonacci.S1">Fibonacci S1</option>
-                                <option value="Pivot.Fibonacci.S2">Fibonacci S2</option>
-                                <option value="Pivot.Fibonacci.S3">Fibonacci S3</option>
-                                <option value="Pivot.Woodie.Middle">Woodie Orta</option>
-                                <option value="Pivot.Woodie.R1">Woodie R1</option>
-                                <option value="Pivot.Woodie.R2">Woodie R2</option>
-                                <option value="Pivot.Woodie.R3">Woodie R3</option>
-                                <option value="Pivot.Woodie.S1">Woodie S1</option>
-                                <option value="Pivot.Woodie.S2">Woodie S2</option>
-                                <option value="Pivot.Woodie.S3">Woodie S3</option>
-                            </optgroup>
-                            <optgroup label="Stochastic">
-                                <option value="Stoch.D">Stochastic (14, 3, 3) %D</option>
-                                <option value="Stoch.K">Stochastic (14, 3, 3) %K</option>
-                            </optgroup>
-                            <optgroup label="Stochastic RSI">
-                                <option value="Stoch.RSI.K">StochRSI (3, 3, 14, 14) Fast</option>
-                                <option value="Stoch.RSI.D">StochRSI (3, 3, 14, 14) Slow</option>
-                            </optgroup>
-                            <optgroup label="TD Sequential">
-                                <option value="TDS">TDS</option>
-                            </optgroup>
-                            <optgroup label="Trend Yoğunluk Endeksi">
-                                <option value="TII">TII</option>
-                            </optgroup>
-                            <optgroup label="Ultimate Oscillator">
-                                <option value="UO">UO (7, 14, 28)</option>
-                            </optgroup>
-                            <optgroup label="Volatilite">
-                                <option value="Volatility.D">Volatilite (Günlük)</option>
-                                <option value="Volatility.W">Volatilite (Haftalık)</option>
-                                <option value="Volatility.M">Volatilite (Aylık)</option>
-                            </optgroup>
-                            <optgroup label="Volume ">
-                                <option value="Volume1440InBTC">İşlem Hacmi (24S) (BTC)</option>
-                                <option value="relative_volume_10d_calc">Göreceli Hacim</option>
-                                <option value="average_volume_10d_calc">Average Volume (10 Days)</option>
-                                <option value="average_volume_30d_calc">Average Volume (30 Days)</option>
-                                <option value="average_volume_60d_calc">Average Volume (60 Days)</option>
-                                <option value="average_volume_90d_calc">Average Volume (90 Days)</option>
-                            </optgroup>
-                            <optgroup label="Williams Percent Range">
-                                <option value="W.R">WR (14)</option>
-                            </optgroup>
-                        </select>
-                    </div>
-
-                    <div class="flex1 col-start ">
-                        <select id="comperator" class="dropDown fullWidth">
-                            <optgroup label="Gösterge">
-                                <option value="11">=</option>
-                                <option value="12">!=</option>
-                                <option value="13">&gt;</option>
-                                <option value="14">&gt;=</option>
-                                <option value="15">&lt;</option>
-                                <option value="16">&lt;=</option>
-                            </optgroup>
-                            <optgroup label="Değer">
-                                <option value="21">=</option>
-                                <option value="22">!=</option>
-                                <option value="23">&gt;</option>
-                                <option value="24">&gt;=</option>
-                                <option value="25">&lt;</option>
-                                <option value="26">&lt;=</option>
-                            </optgroup>
-                            <optgroup label="Aralık">
-                                <option value="31">Arasında</option>
-                                <option value="32">Arasında Değil</option>
-                                <option value="33">Arasında veya Eşit</option>
-                                <option value="34">Arasında veya Eşit Değil</option>
-                            </optgroup>
-                        </select>
-                        <a id="removeBtn" class="formButton outBtn deleteButton">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </div>
-
-                    <div class="flex2 col-start">
-                        <select name="period2" id="period2" class="dropDown fullWidth">
-                            <option value="15m">
-                                15 Dakika
-                            </option>
-                            <option value="1h">
-                                1 Saat
-                            </option>
-                            <option value="4h">
-                                4 Saat
-                            </option>
-                            <option value="1d">
-                                1 Gün
-                            </option>
-                            <option value="3d">
-                                3 Gün
-                            </option>
-                        </select>
-                        <select id="ind2" class="dropDown fullWidth">
-                            <optgroup label="Fiyat">
-                                <option value="ask">Ask - Alış Fiyatı</option>
-                                <option value="bid">Bid - Satış Fiyatı</option>
-                            </optgroup>
-                            <optgroup label="Fiyat Mumu">
-                                <option value="open">Open - Açılış</option>
-                                <option value="high">High - Yüksek</option>
-                                <option value="low">Low - Düşük</option>
-                                <option value="close">Close - Kapanış</option>
-                                <option value="volume">Volume </option>
-                                <option value="Maturation">Mum Olgunluğu (Yüzde)</option>
-                            </optgroup>
-                            <optgroup label="Anlık Değişim (Yüzde)">
-                                <option value="change_from_open">Mum Değişimi (Yüzde)</option>
-                                <option value="change_from_open_abs">Mum Değişimi (Fiyat)</option>
-                                <option value="ChangeInTime.5">5 Dakika</option>
-                                <option value="ChangeInTime.10">10 Dakika</option>
-                                <option value="ChangeInTime.15">15 Dakika</option>
-                                <option value="ChangeInTime.20">20 Dakika</option>
-                                <option value="ChangeInTime.25">25 Dakika</option>
-                                <option value="ChangeInTime.30">30 Dakika</option>
-                                <option value="ChangeInTime.45">45 Dakika</option>
-                                <option value="ChangeInTime.60">60 Dakika</option>
-                                <option value="ChangeInTime.90">90 Dakika</option>
-                                <option value="ChangeInTime.120">2 Saat</option>
-                                <option value="ChangeInTime.180">3 Saat</option>
-                                <option value="ChangeInTime.240">4 Saat</option>
-                                <option value="ChangeInTime.360">6 Saat</option>
-                                <option value="ChangeInTime.480">8 Saat</option>
-                                <option value="ChangeInTime.600">10 Saat</option>
-                                <option value="ChangeInTime.720">12 Saat</option>
-                                <option value="ChangeInTime.960">16 Saat</option>
-                                <option value="ChangeInTime.1200">20 Saat</option>
-                                <option value="ChangeInTime.1440">24 Saat</option>
-                                <option value="ChangeInTime.1920">32 Saat</option>
-                                <option value="ChangeInTime.2400">40 Saat</option>
-                                <option value="ChangeInTime.2880">48 Saat</option>
-                                <option value="ChangeInTime.3600">60 Saat</option>
-                                <option value="ChangeInTime.4320">72 Saat - 3 Gün</option>
-                                <option value="ChangeInTime.5760">96 Saat - 4 Gün</option>
-                                <option value="ChangeInTime.7200">120 Saat - 5 Gün</option>
-                                <option value="ChangeInTime.8640">144 Saat - 6 Gün</option>
-                                <option value="ChangeInTime.10080">168 Saat - 7 Gün</option>
-                                <option value="ChangeInTime.11520">192 Saat - 8 Gün</option>
-                                <option value="ChangeInTime.12960">216 Saat - 9 Gün</option>
-                                <option value="ChangeInTime.14400">240 Saat - 10 Gün</option>
-                            </optgroup>
-                            <optgroup label="Fiyat Limitleri">
-                                <option value="High.1M">En Yüksek (1 Aylık)</option>
-                                <option value="High.3M">En Yüksek (3 Aylık)</option>
-                                <option value="High.6M">En Yüksek (6 Aylık)</option>
-                                <option value="price_52_week_high">En Yüksek (1 Yıllık)</option>
-                                <option value="High.All">En Yüksek (Tüm Zamanlar)</option>
-                                <option value="Low.1M">En Düşük (1 Aylık)</option>
-                                <option value="Low.3M">En Düşük (3 Aylık)</option>
-                                <option value="Low.6M">En Düşük (6 Aylık)</option>
-                                <option value="price_52_week_low">En Düşük (1 Yıllık)</option>
-                                <option value="Low.All">En Düşük (Tüm Zamanlar)</option>
-                            </optgroup>
-                            <optgroup label="Piyasa Değeri (Market Cap)">
-                                <option value="BTC.Dominance">BTC Baskınlığı</option>
-                                <option value="ETH.Dominance">ETH Baskınlığı</option>
-                            </optgroup>
-                            <optgroup label="Aroon">
-                                <option value="Aroon.Up">Aroon (14) Üst</option>
-                                <option value="Aroon.Down">Aroon (14) Alt</option>
-                            </optgroup>
-                            <optgroup label="Boğa Ayı gücü">
-                                <option value="BBPower">BB Power</option>
-                            </optgroup>
-                            <optgroup label="Bollinger Bantları">
-                                <option value="BB.upper">BB (20, 2) Üst Bant</option>
-                                <option value="BB.lower">BB (20, 2) Alt Bant</option>
-                                <option value="BB3.upper">BB (20, 3) Üst Bant</option>
-                                <option value="BB3.lower">BB (20, 3) Alt Bant</option>
-                            </optgroup>
-                            <optgroup label="Değişim Hızı">
-                                <option value="ROC">ROC (9)</option>
-                            </optgroup>
-                            <optgroup label="Donchian Kanalları">
-                                <option value="DonchCh20.Upper">Donchian (20) Üst Bant</option>
-                                <option value="DonchCh20.Lower">Donchian (20) Alt Band</option>
-                            </optgroup>
-                            <optgroup label="EMA SMA Volume">
-                                <option value="EmaSmaVol.Oscilator">EmaSmaVol (9, 17) Osilatör</option>
-                                <option value="EmaSmaVol.Signal">EmaSmaVol (9, 17) Sinyal</option>
-                            </optgroup>
-                            <optgroup label="Emtia Kanal Endeksi">
-                                <option value="CCI20">CCI (20)</option>
-                            </optgroup>
-                            <optgroup label="Göreceli Güç Endeksi">
-                                <option value="RSI">RSI (14)</option>
-                                <option value="RSI7">RSI (7)</option>
-                            </optgroup>
-                            <optgroup label="Göreceli Güç Endeksi Hareketli Ortalamaları">
-                                <option value="RSI14.SMA5">MA (RSI, 5)</option>
-                                <option value="RSI14.SMA7">MA (RSI, 7)</option>
-                                <option value="RSI14.SMA10">MA (RSI, 10)</option>
-                                <option value="RSI14.SMA14">MA (RSI, 14)</option>
-                                <option value="RSI14.SMA21">MA (RSI, 21)</option>
-                                <option value="RSI14.EMA5">EMA (RSI, 5)</option>
-                                <option value="RSI14.EMA7">EMA (RSI, 7)</option>
-                                <option value="RSI14.EMA10">EMA (RSI, 10)</option>
-                                <option value="RSI14.EMA14">EMA (RSI, 14)</option>
-                                <option value="RSI14.EMA21">EMA (RSI, 21)</option>
-                            </optgroup>
-                            <optgroup label="Hareketli Ortalamalar">
-                                <option value="SMA7">MA (7)</option>
-                                <option value="SMA10">MA (10)</option>
-                                <option value="SMA14">MA (14)</option>
-                                <option value="SMA20">MA (20)</option>
-                                <option value="SMA30">MA (30)</option>
-                                <option value="SMA34">MA (34)</option>
-                                <option value="SMA50">MA (50)</option>
-                                <option value="SMA55">MA (55)</option>
-                                <option value="SMA89">MA (89)</option>
-                                <option value="SMA100">MA (100)</option>
-                                <option value="SMA144">MA (144)</option>
-                                <option value="SMA200">MA (200)</option>
-                                <option value="SMA233">MA (233)</option>
-                                <option value="EMA7">EMA (7)</option>
-                                <option value="EMA10">EMA (10)</option>
-                                <option value="EMA14">EMA (14)</option>
-                                <option value="EMA20">EMA (20)</option>
-                                <option value="EMA30">EMA (30)</option>
-                                <option value="EMA34">EMA (34)</option>
-                                <option value="EMA50">EMA (50)</option>
-                                <option value="EMA55">EMA (55)</option>
-                                <option value="EMA89">EMA (89)</option>
-                                <option value="EMA100">EMA (100)</option>
-                                <option value="EMA144">EMA (144)</option>
-                                <option value="EMA200">EMA (200)</option>
-                                <option value="EMA233">EMA (233)</option>
-                                <option value="HullMA9">HullMA (9)</option>
-                                <option value="VWMA">VWMA (20)</option>
-                            </optgroup>
-                            <optgroup label="Ichimoku Kinko Hyo">
-                                <option value="Ichimoku.BLine">Ichimoku Baz Çizgisi / Kijun-sen</option>
-                                <option value="Ichimoku.CLine">Ichimoku Dönüş Çizgisi / Tenkan-sen</option>
-                                <option value="Ichimoku.Lead1">Ichimoku Span A</option>
-                                <option value="Ichimoku.Lead2">Ichimoku Span B</option>
-                            </optgroup>
-                            <optgroup label="Keltner Kanalları">
-                                <option value="KltChnl.upper">KC (20) Üst Bant</option>
-                                <option value="KltChnl.lower">KC (20) Alt Bant</option>
-                            </optgroup>
-                            <optgroup label="MACD">
-                                <option value="MACD.macd">MACD (12, 26) Seviyesi</option>
-                                <option value="MACD.signal">MACD (12, 26) Sinyali</option>
-                            </optgroup>
-                            <optgroup label="Momentum">
-                                <option value="Mom">Momentum (10)</option>
-                            </optgroup>
-                            <optgroup label="Most">
-                                <option value="Most_5_1.Most">Most (5, 1) Most</option>
-                                <option value="Most_5_1.ExMov">Most (5, 1) ExMov</option>
-                            </optgroup>
-                            <optgroup label="Müthiş Osilatör">
-                                <option value="AO">AO</option>
-                            </optgroup>
-                            <optgroup label="Ortalama Gerçek Aralık">
-                                <option value="ATR">ATR (14)</option>
-                            </optgroup>
-                            <optgroup label="Ortalama Gün Aralığı">
-                                <option value="ADR">ADR (14)</option>
-                            </optgroup>
-                            <optgroup label="Ortalama Yönsel Endeks">
-                                <option value="ADX">ADX (14) (Ortalama Yönsel Endeks)</option>
-                                <option value="ADX-DI">ADX (14) -DI (Negatif Yönsel Gösterge)</option>
-                                <option value="ADX+DI">ADX (14) +DI (Pozitif Yönsel Gösterge)</option>
-                            </optgroup>
-                            <optgroup label="Parabolik SAR">
-                                <option value="P.SAR">PSAR</option>
-                            </optgroup>
-                            <optgroup label="Performans">
-                                <option value="Perf.W">Performans (Hafta)</option>
-                                <option value="Perf.1M">Performans (1 Ay)</option>
-                                <option value="Perf.3M">Performans (3 Ay)</option>
-                                <option value="Perf.6M">Performans (6 Ay)</option>
-                                <option value="Perf.Y">Performans (1 Yıl)</option>
-                                <option value="Perf.YTD">Performans (SBB)</option>
-                            </optgroup>
-                            <optgroup label="Pivot Noktaları">
-                                <option value="Pivot.Camarilla.Middle">Camarilla Orta</option>
-                                <option value="Pivot.Camarilla.R1">Camarilla R1</option>
-                                <option value="Pivot.Camarilla.R2">Camarilla R2</option>
-                                <option value="Pivot.Camarilla.R3">Camarilla R3</option>
-                                <option value="Pivot.Camarilla.S1">Camarilla S1</option>
-                                <option value="Pivot.Camarilla.S2">Camarilla S2</option>
-                                <option value="Pivot.Camarilla.S3">Camarilla S3</option>
-                                <option value="Pivot.Classic.Middle">Klasik Orta</option>
-                                <option value="Pivot.Classic.R1">Klasik R1</option>
-                                <option value="Pivot.Classic.R2">Klasik R2</option>
-                                <option value="Pivot.Classic.R3">Klasik R3</option>
-                                <option value="Pivot.Classic.S1">Klasik S1</option>
-                                <option value="Pivot.Classic.S2">Klasik S2</option>
-                                <option value="Pivot.Classic.S3">Klasik S3</option>
-                                <option value="Pivot.DeMark.Middle">DeMark Orta</option>
-                                <option value="Pivot.DeMark.R1">DeMark R1</option>
-                                <option value="Pivot.DeMark.S1">DeMark S1</option>
-                                <option value="Pivot.Fibonacci.Middle">Fibonacci Orta</option>
-                                <option value="Pivot.Fibonacci.R1">Fibonacci R1</option>
-                                <option value="Pivot.Fibonacci.R2">Fibonacci R2</option>
-                                <option value="Pivot.Fibonacci.R3">Fibonacci R3</option>
-                                <option value="Pivot.Fibonacci.S1">Fibonacci S1</option>
-                                <option value="Pivot.Fibonacci.S2">Fibonacci S2</option>
-                                <option value="Pivot.Fibonacci.S3">Fibonacci S3</option>
-                                <option value="Pivot.Woodie.Middle">Woodie Orta</option>
-                                <option value="Pivot.Woodie.R1">Woodie R1</option>
-                                <option value="Pivot.Woodie.R2">Woodie R2</option>
-                                <option value="Pivot.Woodie.R3">Woodie R3</option>
-                                <option value="Pivot.Woodie.S1">Woodie S1</option>
-                                <option value="Pivot.Woodie.S2">Woodie S2</option>
-                                <option value="Pivot.Woodie.S3">Woodie S3</option>
-                            </optgroup>
-                            <optgroup label="Stochastic">
-                                <option value="Stoch.D">Stochastic (14, 3, 3) %D</option>
-                                <option value="Stoch.K">Stochastic (14, 3, 3) %K</option>
-                            </optgroup>
-                            <optgroup label="Stochastic RSI">
-                                <option value="Stoch.RSI.K">StochRSI (3, 3, 14, 14) Fast</option>
-                                <option value="Stoch.RSI.D">StochRSI (3, 3, 14, 14) Slow</option>
-                            </optgroup>
-                            <optgroup label="TD Sequential">
-                                <option value="TDS">TDS</option>
-                            </optgroup>
-                            <optgroup label="Trend Yoğunluk Endeksi">
-                                <option value="TII">TII</option>
-                            </optgroup>
-                            <optgroup label="Ultimate Oscillator">
-                                <option value="UO">UO (7, 14, 28)</option>
-                            </optgroup>
-                            <optgroup label="Volatilite">
-                                <option value="Volatility.D">Volatilite (Günlük)</option>
-                                <option value="Volatility.W">Volatilite (Haftalık)</option>
-                                <option value="Volatility.M">Volatilite (Aylık)</option>
-                            </optgroup>
-                            <optgroup label="Volume ">
-                                <option value="Volume1440InBTC">İşlem Hacmi (24S) (BTC)</option>
-                                <option value="relative_volume_10d_calc">Göreceli Hacim</option>
-                                <option value="average_volume_10d_calc">Average Volume (10 Days)</option>
-                                <option value="average_volume_30d_calc">Average Volume (30 Days)</option>
-                                <option value="average_volume_60d_calc">Average Volume (60 Days)</option>
-                                <option value="average_volume_90d_calc">Average Volume (90 Days)</option>
-                            </optgroup>
-                            <optgroup label="Williams Percent Range">
-                                <option value="W.R">WR (14)</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                </div>
             </div>
-
         </div>
 
         <div class="bigTopMargin regularFont bottomLine">
@@ -658,7 +422,7 @@ try {
 
         <div class="bigTopMargin row-space-between">
             <div class="row-start">
-                <a class="formButton blueBtn">
+                <a id="addStrBtn" class="formButton blueBtn">
                     <i class="fa fa-plus"></i> Kural Grubu Ekle
                 </a>
                 <a class="formButton whiteBtn">
@@ -684,16 +448,35 @@ try {
                 </option>
             </select>
         </div>
-
+        <!--
+        <div class="">
+            <strong>Select Language:</strong>
+            <select id="multiple-checkboxes" multiple="multiple">
+                <option value="php">PHP</option>
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+                <option value="sql">SQL</option>
+                <option value="jquery">Jquery</option>
+                <option value=".net">.Net</option>
+            </select>
+        </div>
+-->
         <div class="topMargin">
-            <a class="applyButton formButton outBtn">
+            <a id="applyButton" type="submit" class="applyButton formButton outBtn">
                 Değişiklikleri Paritelere Uygula
             </a>
         </div>
-    </div>
+    </form>
 </body>
 <script>
-    setListeners();
+    $(document).ready(() => {
+        setListeners();
+    });
+    $('#applyButton').click(() => {
+        $('#form').submit();
+    })
+    let md = <?php echo "'" . md5("macd_seviyesi.indicator.macd_sinyali.indicator..aşağı keser.4h") . "';\n"; ?>
+    console.log(md);
 </script>
 
 </html>

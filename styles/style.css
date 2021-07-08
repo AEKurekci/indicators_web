@@ -70,6 +70,8 @@ table{
 }
 .formButton:hover{
     cursor: pointer;
+    text-decoration: none;
+    color: white;
 }
 .formInput{
     padding: 10px;
@@ -219,6 +221,11 @@ table{
     flex-direction: row;
     justify-content: flex-start;
 }
+.row-space-evenly{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
 .bigTopMargin{
     margin-top: 30px;
 }
@@ -260,4 +267,12 @@ table{
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+}
+
+.dropdown-menu {
+    border-radius: 0;
+}
+
+.padding{
+    padding: 10px;
 }
