@@ -1,0 +1,20 @@
+{
+    "str_type": "buy",
+    "comb_type": "or",
+    "rule_group": [
+        {
+            "str_type": "sell",
+            "cond_type": "or",
+            "cond_ids": [
+                "c59c9dd1a99e03f3ed9845e2a9a7a8ee"
+            ]
+        },
+        {
+            "str_type": "buy",
+            "cond_type": "and",
+            "cond_ids": [
+                "36e3fb59fbe51497356760c71c9f0bd0"
+            ]
+        }
+    ]
+}

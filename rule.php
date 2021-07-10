@@ -15,8 +15,13 @@ try {
         $sql_md5 = "Select id from ind_conditions";
         $md5_result = $connect->query($sql_md5);
         $md5_rows = $md5_result->fetchAll(PDO::FETCH_COLUMN);
+        $sql_md5_strs = "Select id from strategies";
+        $md5_result_strs = $connect->query($sql_md5_strs);
+        $md5_rows_strs = $md5_result_strs->fetchAll(PDO::FETCH_COLUMN);
 
         $bigAndOr = $_POST['bigAndOr'];
+        $bigSellBuy = $_POST['bigSellBuy'];
+        $andOr = $_POST['andOr'];
         $sellBuy = $_POST['sellBuy'];
         $period1 = $_POST['period1'];
         $ind1 = $_POST['ind1'];
@@ -28,9 +33,21 @@ try {
         $min_val = $_POST['min_val'];
         $error = "";
 
+        $strategies = [
+            "str_type" => $bigSellBuy,
+            "comb_type" => $bigAndOr,
+            "rule_group" => array()
+        ];
+
         foreach ($period1 as $i => $p1) {
+
+            $str_obj = [
+                "str_type" => $sellBuy[$i],
+                "cond_type" => $andOr[$i],
+                "cond_ids" => array()
+            ];
+
             foreach ($p1 as $j => $per) {
-                print $val2[$i][$j];
                 $ind1_type = "indicator";
                 $ind2_type = "indicator";
                 $value3 = "";
@@ -52,30 +69,40 @@ try {
                     $value3 = $max_val[$i][$j];
                     $ind2_type = 'value';
                 }
-                echo "<br>";
                 $text_for_md5 = $ind1[$i][$j] . '.' . $ind1_type . '.' . $ind2[$i][$j] . '.' . $ind2_type . '.' . $value3 . '.' . $comperator[$i][$j] . '.' . $period1[$i][$j];
-                print $text_for_md5;
                 $cond_md = md5($text_for_md5);
-                echo "<br>";
-                print $cond_md;
                 if (in_array($cond_md, $md5_rows) == false) {
-                    add_db($cond_md, $ind1[$i][$j], $ind1_type, $ind2[$i][$j], $ind2_type, $value3, $comperator[$i][$j], $period1[$i][$j], $connect);
+                    array_push($str_obj["cond_ids"], $cond_md);
+                    write_cond_db($cond_md, $ind1[$i][$j], $ind1_type, $ind2[$i][$j], $ind2_type, $value3, $comperator[$i][$j], $period1[$i][$j], $connect);
+                } else {
+                    array_push($str_obj["cond_ids"], $cond_md);
                 }
             }
+            array_push($strategies["rule_group"], $str_obj);
+        }
+        $str_json = json_encode($strategies);
+        $str_md = md5($str_json);
+        if (in_array($str_md, $md5_rows_strs) == false) {
+            write_str_db($connect, $str_md, $str_json);
+        } else {
+            echo "<script type='text/javascript'>alert('Zaten böyle bir strateji kaydı var!');</script>";
         }
     }
 } catch (PDOException $ex) {
     print "Connection failed" . $ex->getMessage();
 }
 
-function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $per, $conn)
+function write_cond_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $per, $conn)
 {
-    echo "<br>";
-    print "writing db";
     $sqCond = "INSERT INTO ind_conditions (id, ind1, first_column_type, ind2, second_column_type, value3, operator, period) VALUES
     ('$md_val', '$ind1','$ind1_type','$ind2','$ind2_type','$val3','$oper','$per')";
     $conn->exec($sqCond);
+}
 
+function write_str_db($conn, $id, $strs)
+{
+    $sqlStr = "INSERT INTO strategies (id, strategy) VALUES ('$id', '$strs')";
+    $conn->exec($sqlStr);
     echo "<script type='text/javascript'>alert('Kayıt başarılı');</script>";
 }
 ?>
@@ -119,7 +146,7 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
                 </option>
             </select>
 
-            <select class="dropDown halfWidth" name="sellBuy">
+            <select class="dropDown halfWidth" name="bigSellBuy">
                 <option value="sell">
                     SAT
                 </option>
@@ -135,12 +162,21 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
 
                 <div id="ruleGroup">
                     <div class="bigTopMargin row-space-between">
-                        <select id="andOr" class="dropDown halfWidth" name="andOr[0][]">
+                        <select id="andOr" class="dropDown halfWidth" name="andOr[0]">
                             <option value="and">
                                 VE
                             </option>
                             <option value="or">
                                 VEYE
+                            </option>
+                        </select>
+
+                        <select id="sellBuy" class="dropDown halfWidth" name="sellBuy[0]">
+                            <option value="sell">
+                                SAT
+                            </option>
+                            <option value="buy">
+                                AL
                             </option>
                         </select>
 
@@ -159,7 +195,7 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
 
                     <div id="rule-0" class="rule row-space-between ruleGroupBoxContainer topMargin blueBackground">
                         <div class="flex2 col-start ">
-                            <select name="period1[0][]" id="period1" class="dropDown fullWidth">
+                            <select name="period1[0][0]" id="period1" class="dropDown fullWidth">
                                 <option value="15m">
                                     15 Dakika
                                 </option>
@@ -176,7 +212,7 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
                                     3 Gün
                                 </option>
                             </select>
-                            <select name="ind1[0][]" id="ind1" class="dropDown fullWidth">
+                            <select name="ind1[0][0]" id="ind1" class="dropDown fullWidth">
                                 <optgroup label="Fiyat Mumu">
                                     <option value="open">Open - Açılış</option>
                                     <option value="high">High - Yüksek</option>
@@ -279,7 +315,7 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
                         </div>
 
                         <div class="flex1 col-start ">
-                            <select name="comperator[0][]" id="comperator" class="dropDown fullWidth">
+                            <select name="comperator[0][0]" id="comperator" class="dropDown fullWidth">
                                 <option value="büyük">Büyük</option>
                                 <option value="küçük">Küçük</option>
                                 <option value="aşağı keser">Aşağı Keser</option>
@@ -292,7 +328,7 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
                         </div>
 
                         <div class="flex2 col-start">
-                            <select name="ind2[0][]" id="ind2" class="dropDown fullWidth">
+                            <select name="ind2[0][0]" id="ind2" class="dropDown fullWidth">
                                 <optgroup label="Fiyat Mumu">
                                     <option value="open">Open - Açılış</option>
                                     <option value="high">High - Yüksek</option>
@@ -393,19 +429,19 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
                                 </optgroup>
                             </select>
                             <div id="val_div" hidden>
-                                <input id="val2" name="val2[0][]" class="dropDown" placeholder="Value">
+                                <input id="val2" name="val2[0][0]" class="dropDown" placeholder="Value">
                             </div>
                             <div id="bet_div" class="row-space-evenly" hidden>
-                                <input id="min_val" name="min_val[0][]" class="dropDown" placeholder="Minimum">
-                                <input id="max_val" name="max_val[0][]" class="dropDown" placeholder="Maximum">
+                                <input id="min_val" name="min_val[0][0]" class="dropDown" placeholder="Minimum">
+                                <input id="max_val" name="max_val[0][0]" class="dropDown" placeholder="Maximum">
                             </div>
                             <div id="valueController" class="row-space-evenly padding">
                                 <div>
-                                    <input type="radio" name="input_type[0][]" id="rad_ind-0-0" value="rad_ind" checked>
+                                    <input type="radio" name="input_type[0][0]" id="rad_ind-0-0" value="rad_ind" checked>
                                     <label for="rad_ind-0-0">Gösterge</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="input_type[0][]" id="rad_val-0-0" value="rad_val">
+                                    <input type="radio" name="input_type[0][0]" id="rad_val-0-0" value="rad_val">
                                     <label for="rad_val-0-0">Değer</label>
                                 </div>
                             </div>
@@ -476,7 +512,7 @@ function add_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $oper, $pe
         $('#form').submit();
     })
     let md = <?php echo "'" . md5("macd_seviyesi.indicator.macd_sinyali.indicator..aşağı keser.4h") . "';\n"; ?>
-    console.log(md);
+    //console.log(md);
 </script>
 
 </html>

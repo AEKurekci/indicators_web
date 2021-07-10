@@ -7,13 +7,13 @@ const setListeners = () => {
         let strIdCount = parseInt(strId.split('-')[1]);
         let cloned = $(`#${ruleId}`).clone()
         cloned.prop('id', `rule-${ruleIdCount + 1}`);
-        cloned.find('#period1').attr('name', `period1[${strIdCount}][]`)
-        cloned.find('#ind1').attr('name', `ind1[${strIdCount}][]`)
-        cloned.find('#comperator').attr('name', `comperator[${strIdCount}][]`)
-        cloned.find('#ind2').attr('name', `ind2[${strIdCount}][]`)
-        cloned.find('#val2').attr('name', `val2[${strIdCount}][]`)
-        cloned.find('#min_val').attr('name', `min_val[${strIdCount}][]`)
-        cloned.find('#max_val').attr('name', `max_val[${strIdCount}][]`)
+        cloned.find('#period1').attr('name', `period1[${strIdCount}][${ruleIdCount + 1}]`)
+        cloned.find('#ind1').attr('name', `ind1[${strIdCount}][${ruleIdCount + 1}]`)
+        cloned.find('#comperator').attr('name', `comperator[${strIdCount}][${ruleIdCount + 1}]`)
+        cloned.find('#ind2').attr('name', `ind2[${strIdCount}][${ruleIdCount + 1}]`)
+        cloned.find('#val2').attr('name', `val2[${strIdCount}][${ruleIdCount + 1}]`)
+        cloned.find('#min_val').attr('name', `min_val[${strIdCount}][${ruleIdCount + 1}]`)
+        cloned.find('#max_val').attr('name', `max_val[${strIdCount}][${ruleIdCount + 1}]`)
         cloned.find(`[id*="rad_ind"]`).attr('name', `input_type[${strIdCount}][${ruleIdCount + 1}]`).attr('id', `rad_ind-${strIdCount}-${ruleIdCount + 1}`)
         cloned.find(`[id*="rad_val"]`).attr('name', `input_type[${strIdCount}][${ruleIdCount + 1}]`).attr('id', `rad_val-${strIdCount}-${ruleIdCount + 1}`)
         cloned.find(`[for*="rad_ind"]`).attr('for', `rad_ind-${strIdCount}-${ruleIdCount + 1}`)
@@ -25,12 +25,10 @@ const setListeners = () => {
         //strategy clone
         let strLen = $('#str-container').children().length
         let lastStrId = $('#str-container').children()[strLen - 1].id;
-        console.log(lastStrId);
 
         let strategyId = eventData.currentTarget.parentElement.parentElement.parentElement.parentElement.id;
         let currStrCount = parseInt(strategyId.split('-')[1])
         let strCount = parseInt(lastStrId.split('-')[1]);
-        console.log(strCount);
         let clonedStr = $(`#${strategyId}`).clone()
         clonedStr.prop('id', `strategy-${strCount + 1}`)
 
@@ -39,15 +37,17 @@ const setListeners = () => {
         let ruleLen = eventData.currentTarget.parentElement.parentElement.parentElement.children.length;
         for (let i = 0; i < ruleLen; i++) {
             let ruleId = eventData.currentTarget.parentElement.parentElement.parentElement.children[i].id;
-            let ruleIdCount = parseInt(ruleId.split('-')[1]);
             if (ruleId.split('-')[0] != 'rule') {
                 let andOr = $(`#${strategyId} #andOr`).find(":selected").val();
-                $(`#strategy-${strCount + 1} #andOr`).val(andOr);
+                $(`#strategy-${strCount + 1} #andOr`).val(andOr).attr('name', `andOr[${strCount + 1}]`);
+
+                let sellBuy = $(`#${strategyId} #sellBuy`).find(":selected").val();
+                $(`#strategy-${strCount + 1} #sellBuy`).val(sellBuy).attr('name', `sellBuy[${strCount + 1}]`);
                 continue;
             }
+            let ruleIdCount = parseInt(ruleId.split('-')[1]);
             //copy rule values
             let period1 = $(`#${strategyId} #${ruleId} #period1`).children('option:selected').val();
-            //let period2 = $(`#${strategyId} #${ruleId} #period2`).children('option:selected').val();
             let ind1 = $(`#${strategyId} #${ruleId} #ind1`).children().find(":selected").val();
             let ind2 = $(`#${strategyId} #${ruleId} #ind2`).children().find(":selected").val();
             let comperator = $(`#${strategyId} #${ruleId} #comperator`).find(":selected").val();
@@ -56,14 +56,13 @@ const setListeners = () => {
             let max_val = $(`#${strategyId} #${ruleId} #max_val`).val();
             let input_type = $(`#${strategyId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).val();
             //paste rule values
-            $(`#strategy-${strCount + 1} #${ruleId} #period1`).val(period1).attr('name', `period1[${strCount + 1}][]`);
-            //$(`#strategy-${strCount + 1} #${ruleId} #period2`).val(period2).attr('name', `period2[${strCount + 1}][]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #ind1`).val(ind1).attr('name', `ind1[${strCount + 1}][]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #ind2`).val(ind2).attr('name', `ind2[${strCount + 1}][]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #comperator`).val(comperator).attr('name', `comparetor[${strCount + 1}][]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #val2`).val(val2).attr('name', `val2[${strCount + 1}][]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #min_val`).val(min_val).attr('name', `min_val[${strCount + 1}][]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #max_val`).val(max_val).attr('name', `max_val[${strCount + 1}][]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #period1`).val(period1).attr('name', `period1[${strCount + 1}][${ruleIdCount}]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #ind1`).val(ind1).attr('name', `ind1[${strCount + 1}][${ruleIdCount}]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #ind2`).val(ind2).attr('name', `ind2[${strCount + 1}][${ruleIdCount}]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #comperator`).val(comperator).attr('name', `comperator[${strCount + 1}][${ruleIdCount}]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #val2`).val(val2).attr('name', `val2[${strCount + 1}][${ruleIdCount}]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #min_val`).val(min_val).attr('name', `min_val[${strCount + 1}][${ruleIdCount}]`);
+            $(`#strategy-${strCount + 1} #${ruleId} #max_val`).val(max_val).attr('name', `max_val[${strCount + 1}][${ruleIdCount}]`);
             $(`#strategy-${strCount + 1} #${ruleId} #rad_ind-${currStrCount}-${ruleIdCount}`).val(input_type).attr('name', `input_type[${strCount + 1}][${ruleIdCount}]`).attr('id', `rad_ind-${strCount + 1}-${ruleIdCount}`);
             $(`#strategy-${strCount + 1} #${ruleId} #rad_val-${currStrCount}-${ruleIdCount}`).val(input_type).attr('name', `input_type[${strCount + 1}][${ruleIdCount}]`).attr('id', `rad_val-${strCount + 1}-${ruleIdCount}`);
             $(`#strategy-${strCount + 1} #${ruleId} [for*="rad_ind-${currStrCount}-${ruleIdCount}"]`).attr('for', `rad_ind-${strCount + 1}-${ruleIdCount}`)
@@ -99,18 +98,26 @@ const setListeners = () => {
         let lastStrId = $('#str-container').children()[strLen - 1].id;
         let strCount = parseInt(lastStrId.split('-')[1]);
         let cloned = $(`#str-container #strategy-${strCount}`).clone()
+        let childrenLen = cloned.children('[id*="rule"]').find('[id*="rule"]').length;
+        let rules = cloned.children('[id*="rule"]').find('[id*="rule"]');
+        for (let i = 0; i < childrenLen; i++) {
+            if (i != 0) {
+                rules[i].remove();
+            }
+        }
         cloned.prop('id', `strategy-${strCount + 1}`);
-        cloned.find(`#period1`).attr('name', `period1[${strCount + 1}][]`);
-        //cloned.find(`#period2`).attr('name', `period2[${strCount + 1}][]`);
-        cloned.find(`#ind1`).attr('name', `ind1[${strCount + 1}][]`);
-        cloned.find(`#ind2`).attr('name', `ind2[${strCount + 1}][]`);
-        cloned.find(`#comperator`).attr('name', `comparetor[${strCount + 1}][]`);
-        cloned.find('#val2').attr('name', `val2[${strCount + 1}][]`)
-        cloned.find('#min_val').attr('name', `min_val[${strCount + 1}][]`)
-        cloned.find('#max_val').attr('name', `max_val[${strCount + 1}][]`)
+        cloned.find(`#period1`).attr('name', `period1[${strCount + 1}][0]`);
+        cloned.find(`#ind1`).attr('name', `ind1[${strCount + 1}][0]`);
+        cloned.find(`#ind2`).attr('name', `ind2[${strCount + 1}][0]`);
+        cloned.find(`#comperator`).attr('name', `comperator[${strCount + 1}][0]`);
+        cloned.find('#val2').attr('name', `val2[${strCount + 1}][0]`)
+        cloned.find('#min_val').attr('name', `min_val[${strCount + 1}][0]`)
+        cloned.find('#max_val').attr('name', `max_val[${strCount + 1}][0]`)
+        cloned.find('#sellBuy').attr('name', `sellBuy[${strCount + 1}]`)
+        cloned.find('#andOr').attr('name', `andOr[${strCount + 1}]`)
         //todo rule idyi düzelt
-        cloned.find(`#rad_ind-${strCount}-0`).attr('name', `input_type[${strCount + 1}][]`).attr('id', `rad_ind-${strCount + 1}-0`)
-        cloned.find(`#rad_val-${strCount}-0`).attr('name', `input_type[${strCount + 1}][]`).attr('id', `rad_val-${strCount + 1}-0`)
+        cloned.find(`#rad_ind-${strCount}-0`).attr('name', `input_type[${strCount + 1}][0]`).attr('id', `rad_ind-${strCount + 1}-0`)
+        cloned.find(`#rad_val-${strCount}-0`).attr('name', `input_type[${strCount + 1}][0]`).attr('id', `rad_val-${strCount + 1}-0`)
         cloned.find(`[for="rad_ind-${strCount}-0"]`).attr('for', `rad_ind-${strCount + 1}-0`)
         cloned.find(`[for="rad_val-${strCount}-0"]`).attr('for', `rad_val-${strCount + 1}-0`)
         $('#str-container').append(cloned);
