@@ -16,6 +16,8 @@
 }
 body{
     margin: 0;
+}
+.hiddenOver{
     overflow: hidden;
 }
 .loginContainer{
@@ -296,4 +298,9 @@ table{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.inlineButton{
+    display: inline-block;
+    width: 75%;
+    text-align: center;
 }

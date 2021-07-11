@@ -54,7 +54,7 @@ try {
     <title>Indicators</title>
 </head>
 
-<body>
+<body class="hiddenOver">
     <div id="loginForm" class="loginContainer">
         <div class="halfWidth">
             <img class="fullWidth" src="assets/chart.jpg" alt="login" />
