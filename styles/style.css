@@ -14,7 +14,23 @@
     font-family: Poppins-Bold;
     src: url('../fonts/Poppins-Bold.ttf');
 }
-
+body{
+    margin: 0;
+    overflow: hidden;
+}
+.loginContainer{
+    display: flex;
+    flex-direction: row;
+}
+.formContainer{
+    padding: 50px 80px;
+    background-color: #d4ecebd9;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.formContainer td{
+    padding-bottom: 10px;
+}
 table{
     border-spacing: 0 1px;
 }
@@ -275,4 +291,9 @@ table{
 
 .padding{
     padding: 10px;
+}
+.centeredContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

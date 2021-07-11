@@ -9,6 +9,9 @@ $db = $db_;
 $user_id = $_SESSION['user_id'];
 $success = null;
 
+if ($_SESSION['user_id'] == '') {
+    header('Location:login.php');
+}
 try {
     $connect = new PDO("mysql:host=$server", $username, $password);
     $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -68,7 +71,7 @@ try {
                     <td><a class='blueBtn formButton' href="register.php">Üye Ol</a></td>
                     <td style="color:red"><?php echo $message ?></td>
                     <td id="successMess" style="color:rgb(60, 216, 81)"><?php echo $success ?></td>
-		    <td><a class='blueBtn formButton' href="/phpmyadmin">DB</a></td>
+                    <td><a class='blueBtn formButton' href="/phpmyadmin">DB</a></td>
                 </tr>
             </table>
         </form>
