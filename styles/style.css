@@ -16,6 +16,7 @@
 }
 body{
     margin: 0;
+    height: 100%;
 }
 .hiddenOver{
     overflow: hidden;
@@ -23,15 +24,19 @@ body{
 .loginContainer{
     display: flex;
     flex-direction: row;
+    height: 100%;
 }
 .formContainer{
     padding: 50px 80px;
-    background-color: #d4ecebd9;
     border-radius: 5px;
+    background-color: white;
+}
+.shadow{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .formContainer td{
     padding-bottom: 10px;
+    width: 33%;
 }
 table{
     border-spacing: 0 1px;
@@ -41,6 +46,9 @@ table{
 }
 .halfWidth{
     width: 50%;
+}
+.fullHeight{
+    height: 100vh;
 }
 .tableTitle{
     background-color: #7db8ea;
@@ -79,12 +87,13 @@ table{
 .formButton{
     text-decoration: none;
     color: white;
-    padding: 10px;
+    padding: 7px;
     border-radius: 5px;
     border-width: 0;
     font-family: 'Poppins-Light';
     font-size: 15px;
     margin-right: 2px;
+    width: 100%;
 }
 .formButton:hover{
     cursor: pointer;
@@ -92,8 +101,10 @@ table{
     color: white;
 }
 .formInput{
-    padding: 10px;
+    padding: 15px;
     font-size: 15px;
+    border-width: 0;
+    background-color: #f2f5f9;
 }
 .formInput:focus-visible{
     outline-color: rgb(60, 216, 81);
@@ -104,9 +115,11 @@ table{
 .greenBtn{
     background-color: rgb(60, 216, 81);
 }
+.greenBtn:hover{
+    background-color: rgb(50, 184, 68);
+}
 .blueBtn{
     background-color: rgb(60, 154, 216);
-    padding: 11px;
 }
 .blueBtn:hover{
     background-color: #2b78ab;
@@ -298,9 +311,15 @@ table{
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: mintcream;
 }
 .inlineButton{
     display: inline-block;
     width: 75%;
     text-align: center;
+}
+.titleText{
+    font-family: Poppins-Bold;
+    text-align: center;
+    font-size: 25px;
 }

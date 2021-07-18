@@ -54,13 +54,16 @@ try {
     <title>Indicators</title>
 </head>
 
-<body class="hiddenOver">
+<body>
     <div id="loginForm" class="loginContainer">
-        <div class="halfWidth">
-            <img class="fullWidth" src="assets/chart.jpg" alt="login" />
+        <div id="loginImage" class="halfWidth fullHeight" style="display: none;">
+            <img class="fullWidth fullHeight" src="assets/chart.jpg" alt="login" />
         </div>
-        <div class="halfWidth centeredContainer">
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="formContainer">
+        <div class="halfWidth centeredContainer fullHeight">
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="formContainer shadow">
+                <div class="titleText">
+                    Giriş
+                </div>
                 <table>
                     <tr>
                         <td style="color:red" colspan="3"><?php echo $message ?></td>
@@ -76,9 +79,15 @@ try {
                         </td>
                     </tr>
                     <tr>
-                        <td><input type="submit" name="loginBtn" class='greenBtn formButton' value="Giriş Yap"></td>
-                        <td><a class='blueBtn formButton' href="register.php">Üye Ol</a></td>
-                        <td><a class='blueBtn formButton' href="/phpmyadmin">DB</a></td>
+                        <td>
+                            <input type="submit" name="loginBtn" class='greenBtn formButton' value="Giriş Yap">
+                        </td>
+                        <td>
+                            <a class='blueBtn formButton inlineButton' href="register.php">Üye Ol</a>
+                        </td>
+                        <td>
+                            <a class='blueBtn formButton inlineButton' href="/phpmyadmin">DB</a>
+                        </td>
                     </tr>
                 </table>
             </form>
@@ -86,7 +95,11 @@ try {
     </div>
 
     <script>
-
+        $(document).ready(() => {
+            $('#loginImage').animate({
+                width: 'toggle'
+            })
+        })
     </script>
 </body>
 

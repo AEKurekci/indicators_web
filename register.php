@@ -164,11 +164,14 @@ $connect = null;
 
 <body>
     <div id="loginForm" class="loginContainer">
-        <div class="halfWidth">
+        <div id="registerImage" class="halfWidth" style="display: none;">
             <img class="fullWidth" src="assets/chart.jpg" alt="login" />
         </div>
         <div class="halfWidth centeredContainer">
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="formContainer">
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="formContainer shadow">
+                <div class="titleText">
+                    Kaydol
+                </div>
                 <table>
                     <tr>
                         <td style="color:red" colspan="3"><?php echo $message ?></td>
@@ -242,6 +245,9 @@ $connect = null;
         console.log(encryptedText);
         let decryptedText = decryptText(pass, encryptedText)
         console.log(decryptedText);*/
+        $(document).ready(() => {
+            $('#registerImage').slideToggle()
+        })
     </script>
 </body>
 
