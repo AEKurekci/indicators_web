@@ -2,7 +2,7 @@
 include 'env.php';
 error_reporting(0);
 session_start();
-$server = "localhost";
+$server = $host_;
 $username = $user_;
 $password = $passwd_;
 $db = $db_;

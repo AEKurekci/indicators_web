@@ -2,7 +2,7 @@
 include 'env.php';
 error_reporting(0);
 session_start();
-$server = "localhost";
+$server = $host_;
 $username = $user_;
 $password = $passwd_;
 $db = $db_;
@@ -61,21 +61,6 @@ try {
 </head>
 
 <body>
-    <div id="loginForm">
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>">
-            <table>
-                <tr>
-                    <td><input type="text" name="user_name" class="formInput" placeholder="Kullanıcı Adı"></td>
-                    <td><input type="password" name="password" class="formInput" placeholder="Şifre"></td>
-                    <td><input type="submit" name="loginBtn" class='greenBtn formButton' value="Giriş Yap"></td>
-                    <td><a class='blueBtn formButton' href="register.php">Üye Ol</a></td>
-                    <td style="color:red"><?php echo $message ?></td>
-                    <td id="successMess" style="color:rgb(60, 216, 81)"><?php echo $success ?></td>
-                    <td><a class='blueBtn formButton' href="/phpmyadmin">DB</a></td>
-                </tr>
-            </table>
-        </form>
-    </div>
     <div class="logoutCollider">
         <div class="userText"><?php echo $_SESSION['user_name'] ?></div>
         <a class="formButton blueBtn" href="rule.php">Kural Ekle</a>
@@ -124,7 +109,6 @@ try {
         if (user_name == "") {
             //eğer giriş yapılmamışsa
             setDisableness("#historyTable", true);
-            setDisableness("#loginForm", false);
             $('#historyTable').hide();
             $('#loginForm').show();
             $('.logoutCollider').hide();

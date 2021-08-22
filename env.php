@@ -1,4 +1,5 @@
 <?php
+$host_ = 'localhost';
 $db_ = 'indicators';
 $user_ = 'root';
 $passwd_ = '';
