@@ -19,8 +19,8 @@ try {
         $md5_result_strs = $connect->query($sql_md5_strs);
         $md5_rows_strs = $md5_result_strs->fetchAll(PDO::FETCH_COLUMN);
 
-        $bigAndOr = $_POST['bigAndOr'];
-        $bigSellBuy = $_POST['bigSellBuy'];
+        $bigAndOr = 'and';
+        $bigSellBuy = 'buy';
         $andOr = $_POST['andOr'];
         $sellBuy = $_POST['sellBuy'];
         $period1 = $_POST['period1'];
@@ -205,11 +205,11 @@ function write_str_db($conn, $id, $strs)
                                 <option value="4h">
                                     4 Saat
                                 </option>
+                                <option value="8h">
+                                    8 Saat
+                                </option>
                                 <option value="1d">
                                     1 Gün
-                                </option>
-                                <option value="3d">
-                                    3 Gün
                                 </option>
                             </select>
                             <select name="ind1[0][0]" id="ind1" class="dropDown fullWidth">
@@ -461,42 +461,8 @@ function write_str_db($conn, $id, $strs)
                 <a id="addStrBtn" class="formButton blueBtn">
                     <i class="fa fa-plus"></i> Kural Grubu Ekle
                 </a>
-                <a class="formButton whiteBtn">
-                    Gelişmiş Mod
-                </a>
-                <a class="formButton whiteBtn">
-                    Taslaklar
-                </a>
             </div>
-
-            <a class="formButton outBtn">
-                <i class="fa fa-info"></i> Yardım
-            </a>
         </div>
-
-        <div class="bigTopMargin">
-            <select class="dropDown fullWidth">
-                <option>
-                    Değişiklikleri Seçilen Paritelere Uygula
-                </option>
-                <option>
-                    Değişiklikleri Seçilen Paritelere Uygula
-                </option>
-            </select>
-        </div>
-        <!--
-        <div class="">
-            <strong>Select Language:</strong>
-            <select id="multiple-checkboxes" multiple="multiple">
-                <option value="php">PHP</option>
-                <option value="javascript">JavaScript</option>
-                <option value="java">Java</option>
-                <option value="sql">SQL</option>
-                <option value="jquery">Jquery</option>
-                <option value=".net">.Net</option>
-            </select>
-        </div>
--->
         <div class="topMargin">
             <a id="applyButton" type="submit" class="applyButton formButton outBtn">
                 Değişiklikleri Paritelere Uygula

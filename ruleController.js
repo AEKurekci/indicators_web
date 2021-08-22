@@ -1,4 +1,5 @@
 const setListeners = () => {
+    // kural grubuna kural ekler
     $('#str-container').on('click', '#addBtn', (eventData) => {
         let ruleLen = eventData.currentTarget.parentElement.parentElement.parentElement.children.length;
         let ruleId = eventData.currentTarget.parentElement.parentElement.parentElement.children[ruleLen - 1].id;
@@ -21,6 +22,7 @@ const setListeners = () => {
         $(`#${strId} #ruleGroup`).append(cloned);
     });
 
+    //kural grubundaki kuralı kopyalar
     $('#str-container').on('click', '#copyBtn', (eventData) => {
         //strategy clone
         let strLen = $('#str-container').children().length
@@ -70,6 +72,7 @@ const setListeners = () => {
         }
     })
 
+    //kural grubunu siler
     $('#str-container').on('click', '#strRemoveBtn', (eventData) => {
         let strId = eventData.currentTarget.parentElement.parentElement.parentElement.parentElement.id;
         let strLen = $('.strategy').length;
@@ -80,6 +83,7 @@ const setListeners = () => {
         }
     });
 
+    //kural grubundan kural siler
     $('#str-container').on('click', '#removeBtn', (eventData) => {
         let ruleId = eventData.currentTarget.parentElement.parentElement.id;
         let strId = eventData.currentTarget.parentElement.parentElement.parentElement.parentElement.id;
@@ -92,6 +96,7 @@ const setListeners = () => {
         }
     });
 
+    // Yeni kural grubu ekler
     $('.ruleContainer').on('click', '#addStrBtn', (eventData) => {
         //strategy add
         let strLen = $('#str-container').children().length
@@ -142,6 +147,7 @@ const setListeners = () => {
         $(`#${strId} #${ruleId} #ind2`).hide();
     })
 
+    // karşılaştırma dropdown listener
     $('.ruleContainer').on('change', '#comperator', (eventData) => {
         let ruleId = eventData.currentTarget.parentElement.parentElement.id;
         let ruleIdCount = parseInt(ruleId.split('-')[1])

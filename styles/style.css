@@ -14,9 +14,20 @@
     font-family: Poppins-Bold;
     src: url('../fonts/Poppins-Bold.ttf');
 }
+html{
+    height: 100%;
+}
 body{
     margin: 0;
     height: 100%;
+}
+:root{
+    --global-primary-base: #64287d;
+    --global-primary-dark: #441756;
+    --global-secondary-color: #ffe000;
+    --global-third-color: #bd9aec;
+    --global-gray-base: #f5f2f2;
+    --global-gray-dark: #e4e1e1;
 }
 .hiddenOver{
     overflow: hidden;
@@ -59,7 +70,6 @@ table{
     font-family: 'Poppins-Light';
 }
 .cell{
-    padding: 18px;
     font-family: Poppins-Light;
 }
 .green{
@@ -130,21 +140,20 @@ table{
 .outBtn:hover{
     background-color: rgb(207, 50, 23);
 }
-.whiteBtn{
-    background-color: rgb(255, 255, 255);
-    color: black;
-    font-family: Poppins-Regular;
-    border: 1px solid black;
-}
-.whiteBtn:hover{
-    background-color: #ccc;
+.horizontalContainer{
+    display: flex;
+    flex-direction: row;
 }
 .logoutCollider{
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
+    background-color: var(--global-secondary-color);
+    align-items: center;
+    height: 10%;
 }
 .tableDiv{
+    flex: 5;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -160,8 +169,8 @@ table{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    width: 75%;
-    background-color: #d3e0ea;
+    width: 98%;
+    background-color: var(--global-gray-dark);
     font-family: Poppins-Light;
     font-size: 13px;
 }
@@ -176,7 +185,7 @@ table{
     justify-content: flex-start;
 }
 .paginatorButton{
-    background-color: #7db8ea;
+    background-color: var(--global-third-color);
     margin-right: 1px;
     display: flex;
     justify-content: center;
@@ -186,10 +195,10 @@ table{
 
 .paginatorButton:hover{
     cursor: pointer;
-    background-color: rgb(24, 132, 204);
+    background-color: var(--global-primary-base);
 }
 .selectedPaginator{
-    background-color: rgb(24, 132, 204);
+    background-color: var(--global-primary-base);
 }
 .boldText{
     font-family: Poppins-Semi-Bold;

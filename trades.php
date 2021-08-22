@@ -7,9 +7,8 @@ $username = $user_;
 $password = $passwd_;
 $db = $db_;
 $user_id = $_SESSION['user_id'];
-$user = $_SESSION['user_name'];
 $success = null;
-$isAll = 'false';
+$str_id = $_GET['str_id'];
 
 if ($_SESSION['user_id'] == '') {
     header('Location:login.php');
@@ -43,9 +42,6 @@ try {
     } else {
         echo "$db diye bir DB yok!!";
     }
-    if($_GET['isAll']){
-        $isAll = $_GET['isAll'];
-    }
 } catch (PDOException $ex) {
     print "Connection failed" . $ex->getMessage();
 }
@@ -58,7 +54,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css?version=2">
     <link rel="stylesheet" href="styles/index.css?version=1">
-    <script src="placeStrategy.js"></script>
+    <script src="placeConditions.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
@@ -85,7 +81,7 @@ try {
                         <i class="fa fa-home"></i>
                         Ana Sayfa
                     </a>
-                </li>    
+                </li>  
                 <li>
                     <a class="menuItem" href="rule.php">
                         <i class="fa fa-plus"></i>
@@ -102,18 +98,30 @@ try {
         </div>
         <div class="tableDiv">
             <div class="horizontalContainer tabContainer">
-                <div id="myStrategies" class="tab tabSelected">
+                <a id="myStrategies" class="tab tabSelected" href="index.php?isAll=false">
                     Benim Stratejilerim
-                </div>
-                <div id="allStrategies" class="tab">
+                </a>
+                <a id="allStrategies" class="tab" href="index.php?isAll=true">
                     Tüm Stratejiler
-                </div>
+                </a>
             </div>
+            <div class="tableContainer">
+                <table id="historyTable" class="fullWidth">
+                    <thead>
+                        <tr>
+                            <th class='cell tableTitle'>Parite</th>
+                            <th class='cell tableTitle'>Kâr</th>
+                            <th class='cell tableTitle'>En Yüksek</th>
+                            <th class='cell tableTitle'>En Düşük</th>
+                            <th class='cell tableTitle'>Durum</th>
+                            <th class='cell tableTitle'>Giriş Tarihi</th>
+                            <th class='cell tableTitle'>Çıkış Tarihi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="condsTab">
 
-            <div class="tabContainer">
-                <div id="condsTab">
-                    
-                </div>
+                    </tbody>
+                </table>
             </div>
             <div class="paginatorContainer">
 
@@ -122,34 +130,31 @@ try {
     </div>
 
     <script>
-        var conditions = []
+        var trades = []
         var perPaginator = 15;
         var user_name = ""
-        var activeTab = 0;
-        var isAll = false;
 
         <?php
-        $sql = "Select * from strategies";
+        $sql = "Select * from trades where strategy_id='$str_id'";
         $result = $connect->query($sql);
-        $conditions = array();
+        $trades = array();
         while ($row = $result->fetch()) {
-            array_push($conditions, $row);
+            array_push($trades, $row);
         }
-        echo "var conditions = " . json_encode($conditions) . ";\n";
-        echo "var user_name = '" . $user . "';\n";
-        echo "var isAll = " . $isAll . ";\n";
+        echo "var trades = " . json_encode($trades) . ";";
         if ($_SESSION['user_name']) {
             echo "var user_name = '" . $_SESSION['user_name'] . "';\n";
         }
         $connect = null;
         ?>
-        console.log(isAll);
-        if(isAll){
-            setAllStrategies();
-        }else{
-            setMyStrategies();
-        }
-        setListeners();
+        placed(trades, perPaginator, 1);
+        /*let pass = "Sinyalci575859*";
+        let encryptedText = encryptText(pass, "AnApiKey")
+        let decryptedText = decryptText(pass, encryptedText)*/
+        //for login form submit
+        /*document.getElementById("login").onclick = function() {
+            document.getElementById("loginForm").submit();
+        }*/
     </script>
 </body>
 

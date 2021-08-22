@@ -1,0 +1,101 @@
+.bodyContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 90%;
+}
+
+.leftMenuContainer{
+    flex: 1;
+    padding: 1vw;
+    background-color: var(--global-gray-base);
+}
+.leftMenuContainer ul{
+    padding-inline-start: 10px;
+}
+.leftMenuContainer li{
+    list-style: none;
+    margin-top: 1vw;
+}
+.leftMenuContainer li a{
+    display: block;
+}
+
+.menuItem{
+    text-decoration: none;
+    color: var(--global-third-color);
+    font-family: 'Poppins-Light';
+    border-left: 0.3vw solid var(--global-primary-base);
+    font-size: 19px;
+    padding-left: 2vw;
+}
+.menuItem:hover{
+    border-left: 0.3vw solid var(--global-primary-base);
+    border-bottom: 0.3vw solid var(--global-primary-base);
+}
+.menuItemSelected{
+    border-left: 0.3vw solid var(--global-primary-base);
+    border-bottom: 0.3vw solid var(--global-primary-base);
+}
+.heading{
+    font-family: Poppins-Bold;
+    font-size: 3.5vw;
+    flex: 1;
+    color: var(--global-primary-base) !important;
+    padding: 0 0.5vw;
+}
+.heading:active{
+    color: var(--global-primary-base) !important;
+}
+.heading a{
+    text-decoration: none;
+    color: var(--global-primary-base) !important;
+}
+
+.headerRight{
+    flex: 5;
+    justify-content: flex-end;
+}
+.tabContainer{
+    justify-content: center;
+    align-items: center;
+    width: 98%;
+    margin: 0.5vw;
+}
+.tab{
+    padding: 1vw;
+    background-color: var(--global-third-color);
+    color: white;
+    flex: 1;
+    font-family: Poppins-Regular;
+    text-align: center;
+    text-decoration: none;
+}
+.tab:hover{
+    background-color: var(--global-primary-dark);
+    cursor: pointer;
+}
+.tabSelected{
+    background-color: var(--global-primary-base);
+}
+.strategyContainer{
+    justify-content: space-between;
+    padding: 1vw;
+    border-left: 0.3vw solid var(--global-primary-base);
+    background-color: var(--global-gray-base);
+    border-top-left-radius: 0.8vw;
+    border-bottom-left-radius: 0.8vw;
+    margin-bottom: 0.2vw;
+    text-decoration: none;
+    color: var(--global-primary-base);
+}
+.strategyContainer:hover{
+    background-color: var(--global-gray-dark);
+}
+.active{
+    border-right: 1vw solid rgb(64, 204, 46);
+}
+
+.pasive{
+    border-right: 1vw solid rgb(204, 46, 46);
+}

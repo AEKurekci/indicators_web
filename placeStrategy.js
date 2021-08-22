@@ -1,15 +1,10 @@
 const placed = (data, per, page) => {
-    console.log(data);
     let dataLen = data.length
     if (dataLen == 0) {
         $('#condsTab').append(`
-        <tr class='notr'>
-            <td class='cell'></td>
-            <td class='cell'></td>
-            <td class='cell' colspan='2' style='text-align:center'>Hiç kayıt bulunamadı!</td>
-            <td class='cell'></td>
-            <td class='cell'></td>
-        </tr>
+            <div class="cell">
+                Hiç kayıt bulunamadı!
+            </div>
         `);
         return
     }
@@ -43,35 +38,51 @@ const placed = (data, per, page) => {
             if (page == 1) {
                 return
             }
-            placed(trades, per, page - 1)
+            placed(activeTab === 0 ? conditions.filter(c => c.username === user_name) : conditions,
+                per, page - 1)
         } else if (paginatorButtonContent == "Sonraki") {
             if (page == Math.ceil(pagCount)) {
                 return
             }
-            placed(trades, per, parseInt(page) + 1)
+            placed(activeTab === 0 ? conditions.filter(c => c.username === user_name) : conditions,
+                per, parseInt(page) + 1)
         } else {
-            placed(trades, per, parseInt(eventData.target.innerHTML))
+            placed(activeTab === 0 ? conditions.filter(c => c.username === user_name) : conditions,
+                per, parseInt(eventData.target.innerHTML))
         }
     })
     //Table
     $('#condsTab').empty();
     let floPagCount = Math.floor(pagCount);
-    let upper = per * page > dataLen ? dataLen : per * page;
-    //let upper = floPagCount == 0 ? remainingPag : floPagCount * page > dataLen ? dataLen : floPagCount * page;
+    let upper = floPagCount == 0 ? remainingPag : floPagCount * page > dataLen ? dataLen : floPagCount * page;
     let lower = per * (page - 1);
     for (let i = lower; i < upper; i++) {
         $('#condsTab').append(`
-        <tr class='${parseInt(data[i].durum) == 1 ? 'notr' : parseFloat(data[i].kar) > 0 ? 'green' : parseFloat(data[i].kar) < 0 ? 'red' : 'notr'}'>
-            <td class='cell boldText'>${data[i].parite}</td>
-            <td class='cell'>${data[i].kar}</td>
-            <td class='cell'>${data[i].en_yuksek}</td>
-            <td class='cell'>${data[i].en_dusuk}</td>
-            <td class='cell'>${data[i].durum == 0 ? 'Pasif' : 'Aktif'}</td>
-            <td class='cell'>${new Date(parseInt(data[i].opentime)).toLocaleString('tr-TR')}</td>
-            <td class='cell'>${new Date(parseInt(data[i].closetime)).toLocaleString('tr-TR')}</td>
-        </tr>
+        <a class="horizontalContainer strategyContainer ${data[i].durum == 0 ? 'pasive' : 'active'}" href="trades.php?str_id=${data[i].id}">
+            <div class='cell boldText'>${data[i].strategy_name}</div>
+            <div class='cell'>${data[i].durum == 0 ? 'Pasif' : 'Aktif'}</div>
+        </a>
         `);
     }
+}
+
+const setMyStrategies = () => {
+    placed(conditions.filter(c => c.username === user_name), perPaginator, 1);
+    activeTab = 0;
+    $('#myStrategies').addClass('tabSelected')
+    $('#allStrategies').removeClass('tabSelected')
+}
+
+const setAllStrategies = () => {
+    placed(conditions, perPaginator, 1)
+    activeTab = 1;
+    $('#allStrategies').addClass('tabSelected')
+    $('#myStrategies').removeClass('tabSelected')
+}
+
+const setListeners = () => {
+    $('#myStrategies').click(setMyStrategies)
+    $('#allStrategies').click(setAllStrategies)
 }
 
 const byteCount = (s) => {
