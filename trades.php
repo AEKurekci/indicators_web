@@ -14,34 +14,8 @@ if ($_SESSION['user_id'] == '') {
     header('Location:login.php');
 }
 try {
-    $connect = new PDO("mysql:host=$server", $username, $password);
+    $connect = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $username, $password);
     $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sqlIsDBExist = "SHOW DATABASES LIKE '$db'";
-
-    $isExist = $connect->query($sqlIsDBExist);
-    $row = $isExist->fetch();
-    if ($row > 0) {
-        $connect = null;
-        $connect = new PDO("mysql:host=$server;dbname=$db", $username, $password);
-        $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        if ($_POST['loginBtn']) {
-            $user = $_POST['user_name'];
-            $pass = md5($_POST['password']);
-            $sql = "SELECT user_name, name, password, user_id FROM users WHERE user_name='$user' and password='$pass'";
-            $result = $connect->query($sql);
-            $row = $result->fetch();
-            if ($row['user_name'] != "") {
-                $_SESSION['user_name'] = $row['user_name'];
-                $_SESSION['user_id'] = $row['user_id'];
-                $user_id = $row['user_id'];
-                $success = "Giriş Başarılı";
-            } else {
-                $message = "Hatalı Giriş";
-            }
-        }
-    } else {
-        echo "$db diye bir DB yok!!";
-    }
 } catch (PDOException $ex) {
     print "Connection failed" . $ex->getMessage();
 }
@@ -54,6 +28,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css?version=2">
     <link rel="stylesheet" href="styles/index.css?version=1">
+    <link rel="stylesheet" href="styles/trades.css?version=1">
     <script src="placeConditions.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
@@ -105,17 +80,17 @@ try {
                     Tüm Stratejiler
                 </a>
             </div>
-            <div class="tableContainer">
+            <div class="horizontalContainer tabContainer">
                 <table id="historyTable" class="fullWidth">
                     <thead>
                         <tr>
-                            <th class='cell tableTitle'>Parite</th>
-                            <th class='cell tableTitle'>Kâr</th>
-                            <th class='cell tableTitle'>En Yüksek</th>
-                            <th class='cell tableTitle'>En Düşük</th>
-                            <th class='cell tableTitle'>Durum</th>
-                            <th class='cell tableTitle'>Giriş Tarihi</th>
-                            <th class='cell tableTitle'>Çıkış Tarihi</th>
+                            <th class='lightFont tableTitle'>Parite</th>
+                            <th class='lightFont tableTitle'>Kâr</th>
+                            <th class='lightFont tableTitle'>En Yüksek</th>
+                            <th class='lightFont tableTitle'>En Düşük</th>
+                            <th class='lightFont tableTitle'>Durum</th>
+                            <th class='lightFont tableTitle'>Giriş Tarihi</th>
+                            <th class='lightFont tableTitle'>Çıkış Tarihi</th>
                         </tr>
                     </thead>
                     <tbody id="condsTab">

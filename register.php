@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 }
 try {
-    $connect = new PDO("mysql:host=$server;dbname=$db", $username, $password);
+    $connect = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $username, $password);
     $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     if ($_SERVER['REQUEST_METHOD'] == "POST" && $nameErr == "" && $surnameErr == "" && $emailErr == "" && $userNameErr == "" && $passwordErr == "") {
         if (isUserExist($connect, $userName)) {

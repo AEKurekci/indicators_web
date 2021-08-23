@@ -22,15 +22,16 @@ body{
     height: 100%;
 }
 :root{
-    --global-primary-base: #64287d;
+    /*--global-primary-base: #64287d;
     --global-primary-dark: #441756;
     --global-secondary-color: #ffe000;
-    --global-third-color: #bd9aec;
+    --global-third-color: #bd9aec;*/
+    --global-primary-base: #3c9ad8;
+    --global-primary-dark: #195E8C;
+    --global-secondary-color: #5d328c;
+    --global-third-color: #61C0FF;
     --global-gray-base: #f5f2f2;
     --global-gray-dark: #e4e1e1;
-}
-.hiddenOver{
-    overflow: hidden;
 }
 .loginContainer{
     display: flex;
@@ -61,36 +62,12 @@ table{
 .fullHeight{
     height: 100vh;
 }
-.tableTitle{
-    background-color: #7db8ea;
-    color: #ffffffe0;
-}
 .userText{
     padding: 10px;
     font-family: 'Poppins-Light';
-}
-.cell{
-    font-family: Poppins-Light;
-}
-.green{
-    background-color: rgba(129, 232, 115, 0.73);
-}
-.red{
-    background-color: rgba(232, 97, 72, 0.8);
-}
-.notr{
-    background-color: #cccccc87;
+    color: white;
 }
 
-.topMenu li{
-    list-style: none;
-    display: inline;
-    font-size: 20px;
-}
-.register{
-    list-style: none;
-    font-size: 20px;
-}
 .star{
     color: red;
 }
@@ -103,7 +80,6 @@ table{
     font-family: 'Poppins-Light';
     font-size: 15px;
     margin-right: 2px;
-    width: 100%;
 }
 .formButton:hover{
     cursor: pointer;
@@ -123,7 +99,7 @@ table{
 }
 
 .greenBtn{
-    background-color: rgb(60, 216, 81);
+    background-color: #58b164;
 }
 .greenBtn:hover{
     background-color: rgb(50, 184, 68);
@@ -148,7 +124,7 @@ table{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: var(--global-secondary-color);
+    background-color: var(--global-primary-base);
     align-items: center;
     height: 10%;
 }
@@ -209,9 +185,6 @@ table{
 .regularFont{
     font-family: Poppins-Regular;
 }
-.whiteText{
-    color: white;
-}
 .blackText{
     color: black;
 }
@@ -219,32 +192,7 @@ table{
     text-decoration: none;
     padding: 18px;
 }
-.dropDown{
-    padding: 10px;
-}
-.dropDown:focus-visible{
-    outline-color: rgb(60, 216, 81);
-    outline-style: auto;
-    outline-width: 1px;
-}
 
-/*Rule Box*/
-.ruleBody{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.ruleContainer{
-    width: 75%;
-}
-.ruleGroupBoxContainer{
-    outline-color: #3c9ad8;
-    outline-style: auto;
-    outline-width: 1px;
-    border-radius: 3px;
-    padding: 20px;
-    margin-top: 5px;
-}
 .col-start{
     display: flex;
     flex-direction: column;
@@ -272,35 +220,7 @@ table{
 .topMargin{
     margin-top: 10px;
 }
-.blueBackground{
-    background-color: #7dbde68c;
-}
-.flex2{
-    flex: 2;
-    margin: 10px;
-}
-.flex1{
-    flex: 1;
-    margin: 10px;
-}
-.deleteButton{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 10px;
-}
 
-.bottomLine{
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
-}
-
-.applyButton{
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    align-items: center;
-}
 
 .row-end{
     display: flex;
@@ -308,13 +228,14 @@ table{
     justify-content: flex-end;
     align-items: center;
 }
-
-.dropdown-menu {
-    border-radius: 0;
+.font18{
+    font-size: 18px;
 }
-
 .padding{
     padding: 10px;
+}
+.marginRight{
+    margin: 5px
 }
 .centeredContainer{
     display: flex;

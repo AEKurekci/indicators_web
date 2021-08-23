@@ -4,11 +4,11 @@ const placed = (data, per, page) => {
     if (dataLen == 0) {
         $('#condsTab').append(`
         <tr class='notr'>
-            <td class='cell'></td>
-            <td class='cell'></td>
-            <td class='cell' colspan='2' style='text-align:center'>Hiç kayıt bulunamadı!</td>
-            <td class='cell'></td>
-            <td class='cell'></td>
+            <td class='lightFont'></td>
+            <td class='lightFont'></td>
+            <td class='lightFont' colspan='3' style='text-align:center'>Hiç kayıt bulunamadı!</td>
+            <td class='lightFont'></td>
+            <td class='lightFont'></td>
         </tr>
         `);
         return
@@ -55,20 +55,18 @@ const placed = (data, per, page) => {
     })
     //Table
     $('#condsTab').empty();
-    let floPagCount = Math.floor(pagCount);
     let upper = per * page > dataLen ? dataLen : per * page;
-    //let upper = floPagCount == 0 ? remainingPag : floPagCount * page > dataLen ? dataLen : floPagCount * page;
     let lower = per * (page - 1);
     for (let i = lower; i < upper; i++) {
         $('#condsTab').append(`
         <tr class='${parseInt(data[i].durum) == 1 ? 'notr' : parseFloat(data[i].kar) > 0 ? 'green' : parseFloat(data[i].kar) < 0 ? 'red' : 'notr'}'>
-            <td class='cell boldText'>${data[i].parite}</td>
-            <td class='cell'>${data[i].kar}</td>
-            <td class='cell'>${data[i].en_yuksek}</td>
-            <td class='cell'>${data[i].en_dusuk}</td>
-            <td class='cell'>${data[i].durum == 0 ? 'Pasif' : 'Aktif'}</td>
-            <td class='cell'>${new Date(parseInt(data[i].opentime)).toLocaleString('tr-TR')}</td>
-            <td class='cell'>${new Date(parseInt(data[i].closetime)).toLocaleString('tr-TR')}</td>
+            <td class='boldText'>${data[i].parite}</td>
+            <td class='lightFont'>${data[i].kar}</td>
+            <td class='lightFont'>${data[i].en_yuksek}</td>
+            <td class='lightFont'>${data[i].en_dusuk}</td>
+            <td class='lightFont'>${data[i].durum == 0 ? 'Pasif' : 'Aktif'}</td>
+            <td class='lightFont'>${new Date(parseInt(data[i].opentime)).toLocaleString('tr-TR')}</td>
+            <td class='lightFont'>${new Date(parseInt(data[i].closetime)).toLocaleString('tr-TR')}</td>
         </tr>
         `);
     }

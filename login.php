@@ -16,7 +16,7 @@ try {
     $row = $isExist->fetch();
     if ($row > 0) {
         $connect = null;
-        $connect = new PDO("mysql:host=$server;dbname=$db", $username, $password);
+        $connect = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $username, $password);
         $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         if ($_POST['loginBtn']) {
             $user = $_POST['user_name'];

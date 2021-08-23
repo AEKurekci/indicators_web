@@ -2,7 +2,7 @@ const placed = (data, per, page) => {
     let dataLen = data.length
     if (dataLen == 0) {
         $('#condsTab').append(`
-            <div class="cell">
+            <div class="lightFont">
                 Hiç kayıt bulunamadı!
             </div>
         `);
@@ -53,14 +53,13 @@ const placed = (data, per, page) => {
     })
     //Table
     $('#condsTab').empty();
-    let floPagCount = Math.floor(pagCount);
-    let upper = floPagCount == 0 ? remainingPag : floPagCount * page > dataLen ? dataLen : floPagCount * page;
+    let upper = per * page > dataLen ? dataLen : per * page;
     let lower = per * (page - 1);
     for (let i = lower; i < upper; i++) {
         $('#condsTab').append(`
         <a class="horizontalContainer strategyContainer ${data[i].durum == 0 ? 'pasive' : 'active'}" href="trades.php?str_id=${data[i].id}">
-            <div class='cell boldText'>${data[i].strategy_name}</div>
-            <div class='cell'>${data[i].durum == 0 ? 'Pasif' : 'Aktif'}</div>
+            <div class='boldText'>${data[i].strategy_name}</div>
+            <div class='lightFont'>${data[i].durum == 0 ? 'Open' : 'Closed'}</div>
         </a>
         `);
     }

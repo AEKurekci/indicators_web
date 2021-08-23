@@ -1,0 +1,61 @@
+
+.dropDown{
+    padding: 8px;
+}
+.dropDown:focus-visible{
+    outline-color: rgb(60, 216, 81);
+    outline-style: auto;
+    outline-width: 1px;
+}
+/*Rule Box*/
+.ruleBody{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.ruleContainer{
+    width: 75%;
+}
+.ruleGroupBoxContainer{
+    outline-color: #3c9ad8;
+    outline-style: auto;
+    outline-width: 1px;
+    border-radius: 3px;
+    padding: 20px;
+    margin-top: 5px;
+}
+.blueBackground{
+    background-color: #7dbde68c;
+}
+.flex2{
+    flex: 2;
+    margin: 10px;
+}
+.flex1{
+    flex: 1;
+    margin: 10px;
+}
+
+.deleteButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottomLine{
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+.applyButton{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+}
+.bottomContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

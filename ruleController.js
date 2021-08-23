@@ -158,7 +158,7 @@ const setListeners = () => {
             $(`#${strId} #${ruleId} #val_div`).hide();
             $(`#${strId} #${ruleId} #bet_div`).show().css('display', 'flex');;
             $(`#${strId} #${ruleId} #ind2`).hide();
-            $(`#${strId} #${ruleId} #rad_val`).prop('checked', true);
+            $(`#${strId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).prop('checked', true);
             $(`#${strId} #${ruleId} #rad_ind-${strCount}-${ruleIdCount}`).attr('disabled', true);
             $(`#${strId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).attr('disabled', true);
         } else if ($(`#${strId} #${ruleId} #bet_div`).is(':visible')) {
@@ -167,9 +167,12 @@ const setListeners = () => {
             $(`#${strId} #${ruleId} #ind2`).hide();
             $(`#${strId} #${ruleId} #rad_ind-${strCount}-${ruleIdCount}`).attr('disabled', false);
             $(`#${strId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).attr('disabled', false);
+            $(`#${strId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).prop('checked', true);
         } else {
             $(`#${strId} #${ruleId} #rad_ind-${strCount}-${ruleIdCount}`).attr('disabled', false);
             $(`#${strId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).attr('disabled', false);
         }
     })
+    $(`#bet_div`).hide();
 }
+

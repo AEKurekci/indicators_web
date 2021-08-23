@@ -23,8 +23,8 @@
 
 .menuItem{
     text-decoration: none;
-    color: var(--global-third-color);
-    font-family: 'Poppins-Light';
+    color: var(--global-secondary-color);
+    font-family: 'Poppins-Regular';
     border-left: 0.3vw solid var(--global-primary-base);
     font-size: 19px;
     padding-left: 2vw;
@@ -41,15 +41,19 @@
     font-family: Poppins-Bold;
     font-size: 3.5vw;
     flex: 1;
-    color: var(--global-primary-base) !important;
+    color: black !important;
     padding: 0 0.5vw;
 }
 .heading:active{
-    color: var(--global-primary-base) !important;
+    color: black !important;
 }
 .heading a{
     text-decoration: none;
-    color: var(--global-primary-base) !important;
+    color: black !important;
+}
+.heading a:hover{
+    text-decoration: none;
+    color: var(--global-primary-dark) !important;
 }
 
 .headerRight{
