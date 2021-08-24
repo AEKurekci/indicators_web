@@ -17,15 +17,12 @@
     width: 75%;
 }
 .ruleGroupBoxContainer{
-    outline-color: #3c9ad8;
-    outline-style: auto;
-    outline-width: 1px;
-    border-radius: 3px;
+    border: 1px solid var(--global-secondary-color);
     padding: 20px;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 .blueBackground{
-    background-color: #7dbde68c;
+    background-color: var(--global-third-color);
 }
 .flex2{
     flex: 2;

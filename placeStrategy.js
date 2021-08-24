@@ -1,15 +1,16 @@
 const placed = (data, per, page) => {
+    $('.paginatorContainer').empty();
     let dataLen = data.length
     if (dataLen == 0) {
+        $('#condsTab').empty();
         $('#condsTab').append(`
-            <div class="lightFont">
+            <div class="lightFont centeredContainer warningStyle padding">
                 Hiç kayıt bulunamadı!
             </div>
         `);
         return
     }
     // Paginator
-    $('.paginatorContainer').empty();
     $('.paginatorContainer').append(`
         <div class="paginatorExplanation">${dataLen} Kayıttan ${per * (page - 1)} - ${dataLen < per * page ? dataLen : per * page} arası gösteriliyor</div>
         <div class="paginator">

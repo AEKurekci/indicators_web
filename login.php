@@ -46,6 +46,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css?version=2">
+    <link rel="icon" href="assets/icon.png" />
     <script src="placeConditions.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
@@ -59,7 +60,7 @@ try {
         <div id="loginImage" class="halfWidth fullHeight" style="display: none;">
             <img class="fullWidth fullHeight" src="assets/chart.jpg" alt="login" />
         </div>
-        <div class="halfWidth centeredContainer fullHeight">
+        <div class="halfWidth centeredContainer mintBackground fullHeight">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="formContainer shadow">
                 <div class="titleText">
                     Giriş

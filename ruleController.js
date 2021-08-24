@@ -22,7 +22,7 @@ const setListeners = () => {
         $(`#${strId} #ruleGroup`).append(cloned);
     });
 
-    //kural grubundaki kuralı kopyalar
+    //kural grubunu kopyalar
     $('#str-container').on('click', '#copyBtn', (eventData) => {
         //strategy clone
         let strLen = $('#str-container').children().length
@@ -56,7 +56,8 @@ const setListeners = () => {
             let val2 = $(`#${strategyId} #${ruleId} #val2`).val();
             let min_val = $(`#${strategyId} #${ruleId} #min_val`).val();
             let max_val = $(`#${strategyId} #${ruleId} #max_val`).val();
-            let input_type = $(`#${strategyId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).val();
+            let input_type_ind = $(`#${strategyId} #${ruleId} #rad_ind-${strCount}-${ruleIdCount}`).val();
+            let input_type_val = $(`#${strategyId} #${ruleId} #rad_val-${strCount}-${ruleIdCount}`).val();
             //paste rule values
             $(`#strategy-${strCount + 1} #${ruleId} #period1`).val(period1).attr('name', `period1[${strCount + 1}][${ruleIdCount}]`);
             $(`#strategy-${strCount + 1} #${ruleId} #ind1`).val(ind1).attr('name', `ind1[${strCount + 1}][${ruleIdCount}]`);
@@ -65,8 +66,8 @@ const setListeners = () => {
             $(`#strategy-${strCount + 1} #${ruleId} #val2`).val(val2).attr('name', `val2[${strCount + 1}][${ruleIdCount}]`);
             $(`#strategy-${strCount + 1} #${ruleId} #min_val`).val(min_val).attr('name', `min_val[${strCount + 1}][${ruleIdCount}]`);
             $(`#strategy-${strCount + 1} #${ruleId} #max_val`).val(max_val).attr('name', `max_val[${strCount + 1}][${ruleIdCount}]`);
-            $(`#strategy-${strCount + 1} #${ruleId} #rad_ind-${currStrCount}-${ruleIdCount}`).val(input_type).attr('name', `input_type[${strCount + 1}][${ruleIdCount}]`).attr('id', `rad_ind-${strCount + 1}-${ruleIdCount}`);
-            $(`#strategy-${strCount + 1} #${ruleId} #rad_val-${currStrCount}-${ruleIdCount}`).val(input_type).attr('name', `input_type[${strCount + 1}][${ruleIdCount}]`).attr('id', `rad_val-${strCount + 1}-${ruleIdCount}`);
+            $(`#strategy-${strCount + 1} #${ruleId} #rad_ind-${currStrCount}-${ruleIdCount}`).val(input_type_ind).attr('name', `input_type[${strCount + 1}][${ruleIdCount}]`).attr('id', `rad_ind-${strCount + 1}-${ruleIdCount}`);
+            $(`#strategy-${strCount + 1} #${ruleId} #rad_val-${currStrCount}-${ruleIdCount}`).val(input_type_val).attr('name', `input_type[${strCount + 1}][${ruleIdCount}]`).attr('id', `rad_val-${strCount + 1}-${ruleIdCount}`);
             $(`#strategy-${strCount + 1} #${ruleId} [for*="rad_ind-${currStrCount}-${ruleIdCount}"]`).attr('for', `rad_ind-${strCount + 1}-${ruleIdCount}`)
             $(`#strategy-${strCount + 1} #${ruleId} [for*="rad_val-${currStrCount}-${ruleIdCount}"]`).attr('for', `rad_val-${strCount + 1}-${ruleIdCount}`)
         }

@@ -155,6 +155,7 @@ $connect = null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="assets/icon.png" />
     <script src="placeConditions.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
@@ -167,7 +168,7 @@ $connect = null;
         <div id="registerImage" class="halfWidth" style="display: none;">
             <img class="fullWidth" src="assets/chart.jpg" alt="login" />
         </div>
-        <div class="halfWidth centeredContainer">
+        <div class="halfWidth centeredContainer mintBackground">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="formContainer shadow">
                 <div class="titleText">
                     Kaydol

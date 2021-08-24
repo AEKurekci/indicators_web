@@ -1,12 +1,15 @@
 const placed = (data, per, page) => {
-    console.log(data);
     let dataLen = data.length
+    $('.paginatorContainer').empty();
     if (dataLen == 0) {
+        $('#condsTab').empty();
         $('#condsTab').append(`
         <tr class='notr'>
             <td class='lightFont'></td>
             <td class='lightFont'></td>
+            <td class='lightFont'></td>
             <td class='lightFont' colspan='3' style='text-align:center'>Hiç kayıt bulunamadı!</td>
+            <td class='lightFont'></td>
             <td class='lightFont'></td>
             <td class='lightFont'></td>
         </tr>
@@ -14,7 +17,6 @@ const placed = (data, per, page) => {
         return
     }
     // Paginator
-    $('.paginatorContainer').empty();
     $('.paginatorContainer').append(`
         <div class="paginatorExplanation">${dataLen} Kayıttan ${per * (page - 1)} - ${dataLen < per * page ? dataLen : per * page} arası gösteriliyor</div>
         <div class="paginator">
@@ -61,6 +63,8 @@ const placed = (data, per, page) => {
         $('#condsTab').append(`
         <tr class='${parseInt(data[i].durum) == 1 ? 'notr' : parseFloat(data[i].kar) > 0 ? 'green' : parseFloat(data[i].kar) < 0 ? 'red' : 'notr'}'>
             <td class='boldText'>${data[i].parite}</td>
+            <td class='lightFont'>${data[i].buy}</td>
+            <td class='lightFont'>${data[i].sell}</td>
             <td class='lightFont'>${data[i].kar}</td>
             <td class='lightFont'>${data[i].en_yuksek}</td>
             <td class='lightFont'>${data[i].en_dusuk}</td>

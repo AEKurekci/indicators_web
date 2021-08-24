@@ -1,14 +1,23 @@
 {
     "str_type": "buy",
     "comb_type": "and",
-    "str_name": "testtssst",
-    "stop": "3",
+    "str_name": "sghdfg",
+    "stop": "",
     "rule_group": [
         {
             "str_type": "sell",
             "cond_type": "and",
             "cond_ids": [
-                "83b49cdcc3c24bcd45b09db156f81fd8"
+                "7d194bbbca34d1497c490109f1485a4f",
+                "7d194bbbca34d1497c490109f1485a4f"
+            ]
+        },
+        {
+            "str_type": "buy",
+            "cond_type": "and",
+            "cond_ids": [
+                "18014749bf14c0b451a056c2744db8eb",
+                "9b0d2025efcd2a886962f03610c62e39"
             ]
         }
     ]

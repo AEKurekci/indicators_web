@@ -69,10 +69,14 @@ try {
                 } else if ($input_type[$i][$j] == 'rad_val') {
                     $ind2_type = "value";
                     $ind2[$i][$j] = $val2[$i][$j];
+                    if($ind2[$i][$j] == ""){
+                        $error = "Hata! Değer karşılaştırması seçiliyse bir değer girilmesi gerekir!";
+                        break 2;
+                    }
                 }
                 if ($comperator[$i][$j] == 'arasında') {
                     if ($min_val[$i][$j] == '' || $max_val[$i][$j] == '') {
-                        $error = "Tüm değerlerin doğru girildiğininden emin olun!";
+                        $error = "Hata! Tüm değerlerin doğru girildiğininden emin olun!";
                         break 2;
                     }
                     $ind2[$i][$j] = $min_val[$i][$j];
@@ -90,6 +94,10 @@ try {
                 }
             }
             array_push($strategies["rule_group"], $str_obj);
+        }
+        $extractedStrategyTypes = array_map("extractStrType", $strategies["rule_group"]);
+        if(in_array("sell", $extractedStrategyTypes) == 0 || in_array("buy", $extractedStrategyTypes) == 0){
+            $error = "Hata! Alış ve Satış stratejisinin ikisi de eklenmelidir, iki stratejiden biri eksik.";
         }
         if($error == ""){
             $str_json = json_encode($strategies);
@@ -114,9 +122,13 @@ function write_cond_db($md_val, $ind1, $ind1_type, $ind2, $ind2_type, $val3, $op
 
 function write_str_db($conn, $id, $strs, $str_name, $stop, $user)
 {
-    $sqlStr = "INSERT INTO strategies (id, strategy, stop, username, durum, strategy_name) VALUES ('$id', '$strs', '$stop', '$user', '1', '$str_name')";
+    $sqlStr = "INSERT INTO strategies (id, strategy, stop, username, durum, strategy_name) VALUES ('$id', '$strs', NULLIF('$stop',''), '$user', '1', '$str_name')";
     $conn->exec($sqlStr);
     echo "<script type='text/javascript'>alert('Kayıt başarılı');</script>";
+}
+
+function extractStrType($strArray){
+    return $strArray["str_type"];
 }
 ?>
 <!DOCTYPE html>
@@ -128,9 +140,11 @@ function write_str_db($conn, $id, $strs, $str_name, $stop, $user)
     <link rel="stylesheet" href="styles/style.css?version=2">
     <link rel="stylesheet" href="styles/index.css?version=1">
     <link rel="stylesheet" href="styles/rule.css?version=3">
+    <link rel="icon" href="assets/icon.png" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="placeConditions.js"></script>
     <script src="ruleController.js"></script>
+    <link rel="icon" href="assets/icon.png" />
 <!--
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -210,8 +224,8 @@ function write_str_db($conn, $id, $strs, $str_name, $stop, $user)
                 -->
 
                 <div id="str-container">
-                    <div id="strategy-0" class="ruleGroupBoxContainer col-start strategy">
-                        <div class="regularFont blackText">- Kural Grubu</div>
+                    <div id="strategy-0" class="ruleGroupBoxContainer col-start strategy shadow">
+                        <div class="regularFont blackText">Kural Grubu</div>
 
                         <div id="ruleGroup">
                             <div class="bigTopMargin row-space-between">
@@ -484,7 +498,7 @@ function write_str_db($conn, $id, $strs, $str_name, $stop, $user)
                                         </optgroup>
                                     </select>
                                     <div id="val_div" hidden>
-                                        <input id="val2" name="val2[0][0]" class="dropDown" placeholder="Value">
+                                        <input id="val2" name="val2[0][0]" class="dropDown" placeholder="Value" type="number">
                                     </div>
                                     <div id="bet_div" class="row-space-evenly" hidden>
                                         <input id="min_val" name="min_val[0][0]" class="dropDown" placeholder="Minimum">
@@ -518,7 +532,7 @@ function write_str_db($conn, $id, $strs, $str_name, $stop, $user)
                         </a>
                     </div>
                     <div>
-                        <input id="stop" class="dropDown" placeholder="Stop" name="stop" /> <span class="lightFont font18">%</span>
+                        <input id="stop" type="number" class="dropDown" placeholder="Stop" name="stop" /> <span class="lightFont font18">%</span>
                     </div>
                     <input id="str_name" class="dropDown" placeholder="Stratejiye isim ver" name="str_name" />
                 </div>

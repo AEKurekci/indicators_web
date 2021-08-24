@@ -103,3 +103,6 @@
 .pasive{
     border-right: 1vw solid rgb(204, 46, 46);
 }
+.warningStyle{
+    background-color: var(--global-gray-dark);
+}

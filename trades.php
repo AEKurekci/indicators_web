@@ -29,6 +29,7 @@ try {
     <link rel="stylesheet" href="styles/style.css?version=2">
     <link rel="stylesheet" href="styles/index.css?version=1">
     <link rel="stylesheet" href="styles/trades.css?version=1">
+    <link rel="icon" href="assets/icon.png" />
     <script src="placeConditions.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
@@ -85,6 +86,8 @@ try {
                     <thead>
                         <tr>
                             <th class='lightFont tableTitle'>Parite</th>
+                            <th class='lightFont tableTitle'>Alış</th>
+                            <th class='lightFont tableTitle'>Satış</th>
                             <th class='lightFont tableTitle'>Kâr</th>
                             <th class='lightFont tableTitle'>En Yüksek</th>
                             <th class='lightFont tableTitle'>En Düşük</th>
