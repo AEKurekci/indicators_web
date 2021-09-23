@@ -1,6 +1,6 @@
 {
     "str_type": "buy",
-    "comb_type": "and",
+    "comb_type": "or",
     "str_name": "sghdfg",
     "stop": "",
     "rule_group": [
